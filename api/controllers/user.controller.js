@@ -3,11 +3,6 @@ import dao from '../repositories/dao';
 
 export default class {
 
-    static async getAllUsers(req, res) {
-        let users = await repository.getAllUsers();
-        return res.send({ users });
-    }
-
     static async getUserByUsername(req, res) {
         let user = await repository.getUserByUsername(req.params.username);
         return res.send({ user });
