@@ -6,6 +6,7 @@ import { authenticated, authMiddleware } from './controllers/auth.controller';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 
+const rateLimit = require('express-rate-limit');
 const PORT = 3080;
 export const app = express();
 
@@ -16,5 +17,10 @@ app.use(authMiddleware);
 
 dao.setupDbForDev();
 
-app.use('/api/auth', authRoutes);
+const apiLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: 1
+});
+
+app.use('/api/auth', apiLimiter, authRoutes);
 app.use('/api/user', authenticated, userRoutes);
