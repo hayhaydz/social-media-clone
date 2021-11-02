@@ -1,21 +1,18 @@
 import jwt from 'jsonwebtoken';
 import repository from '../repositories/repoisitory';
 import dao from '../repositories/dao';
+import { setTimeout } from 'timers';
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 const saltRounds = 10;
 
 const { 
-    ACCESS_TOKEN_SECRET = 'secret',
-    REFRESH_TOKEN_SECRET = 'secret'
+    ACCESS_TOKEN_SECRET,
+    REFRESH_TOKEN_SECRET
 } = process.env;
 
-const encodeAccessToken = (tokenData) => {
-    return jwt.sign(tokenData, ACCESS_TOKEN_SECRET, { expiresIn: '5m' });
-}
-
-const encodeRefreshToken = (tokenData) => {
-    return jwt.sign(tokenData, REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+const encodeToken = (tokenData, secret, expiry) => {
+    return jwt.sign(tokenData, secret, { expiresIn: expiry });
 }
 
 const decodeToken = (token) => {
@@ -27,16 +24,17 @@ const decodeToken = (token) => {
 }
 
 const tokenHandling = async (user, res) => {
-    const accessToken = encodeAccessToken({ user_id: user.user_id });
-    const refreshToken = encodeRefreshToken({ user_id: user.user_id });
+    const accessToken = encodeToken({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, '5m');
+    const refreshToken = encodeToken({ user_id: user.user_id }, REFRESH_TOKEN_SECRET, '1d');
     let date = new Date();
-    date.setDate(date.getDate() + 7);
+    date.setDate(date.getDate() + 1);
     await repository.insertToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000), result => {
         console.log(result);
     })
     .catch(err => {
         console.error(err);
     });
+
     return res.json({ accessToken: accessToken, refreshToken: refreshToken });
 }
 
@@ -75,6 +73,27 @@ const errorMessage = (res, msg) => {
     return res.json({ error: msg });
 }
 
+// https://stackoverflow.com/questions/12309019/javascript-how-to-do-something-every-full-hour/12309126
+export const refreshTokenStatus = async (res, msg) => {
+    let d = new Date(),
+        h = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours() + 1, 0, 0, 0),
+        e = h - d;
+    if(e > 100) {
+        setTimeout(refreshTokenStatus, e);
+    }
+
+    await repository.allTokens().then((rows) => {
+        rows.forEach( async (row) => {
+            let newD = new Date(row.expires_at * 1000);
+            if(d > newD) {
+                console.log('expired token');
+                
+                await repository.delUserToken(row.user_id).catch(err => console.log(err));
+            }
+        })
+    }).catch(err => console.log(err));
+}
+
 export const refresh = async (req, res) => {
     const refreshToken = req.body.token;
     if(refreshToken == null) return errorMessage(res, 'A token must be provided');
@@ -82,7 +101,7 @@ export const refresh = async (req, res) => {
     if(promise == null) return errorMessage(res, 'Invalid token provided');
     jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
         if(err) return res.sendStatus(403);
-        const accessToken = encodeAccessToken({ user_id: user.user_id });
+        const accessToken = encodeToken({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, '5m');
         res.json({ accessToken: accessToken });
     })
     res.status(200);
@@ -110,7 +129,7 @@ export const login = async (req, res) => {
             } else {
                 await repository.delUserToken(user.user_id).then((result) => {
                     return tokenHandling(user, res);
-                }).catch(err => { console.log(err); return errorMessage(res, 'Logging user in failed'); })
+                }).catch(err => { console.log(err); return errorMessage(res, 'Logging user in failed'); });
             }
         } else {
             return errorMessage(res, 'Invalid username or password');

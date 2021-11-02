@@ -24,6 +24,10 @@ export default class {
         return dao.run("INSERT INTO user_profiles (user_id, first_name, last_name) VALUES (?, ?, ?)", [id, frstnm, lstnm]);
     }
 
+    static async allTokens() {
+        return dao.all("SELECT * FROM access");
+    }
+
     static async getUserIdToken(id) {
         return dao.get("SELECT * FROM access WHERE user_id =?", [id]);
     }
