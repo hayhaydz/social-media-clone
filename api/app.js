@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 import express from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
@@ -17,10 +15,10 @@ app.use(authMiddleware);
 
 dao.setupDbForDev();
 
-const apiLimiter = rateLimit({
-    windowMs: 5 * 60 * 1000,
-    max: 1
-});
+// const apiLimiter = rateLimit({
+//     windowMs: 5 * 60 * 1000,
+//     max: 1
+// });
 
-app.use('/api/auth', apiLimiter, authRoutes);
+app.use('/api/auth', authRoutes);
 app.use('/api/user', authenticated, userRoutes);
