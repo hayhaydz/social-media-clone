@@ -2,21 +2,17 @@ import jwt from 'jsonwebtoken';
 import repository from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 import { setTimeout } from 'timers';
+const { config } = require('../config');
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
 const saltRounds = 10;
-
-const { 
-    ACCESS_TOKEN_SECRET,
-    REFRESH_TOKEN_SECRET
-} = process.env;
 
 const encodeToken = (tokenData, secret, expiry) => {
     return jwt.sign(tokenData, secret, { expiresIn: expiry });
 }
 
 const decodeToken = (token) => {
-    return jwt.verify(token, ACCESS_TOKEN_SECRET, (err, decoded) => {
+    return jwt.verify(token, config.ACCESS_TOKEN_SECRET, (err, decoded) => {
         if(!err) {
             return decoded;
         }
@@ -24,8 +20,8 @@ const decodeToken = (token) => {
 }
 
 const tokenHandling = async (user, res) => {
-    const accessToken = encodeToken({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, '5m');
-    const refreshToken = encodeToken({ user_id: user.user_id }, REFRESH_TOKEN_SECRET, '1d');
+    const accessToken = encodeToken({ user_id: user.user_id }, config.ACCESS_TOKEN_SECRET, '5m');
+    const refreshToken = encodeToken({ user_id: user.user_id }, config.REFRESH_TOKEN_SECRET, '1d');
     let date = new Date();
     date.setDate(date.getDate() + 1);
     await repository.insertToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000), result => {
@@ -99,9 +95,9 @@ export const refresh = async (req, res) => {
     if(refreshToken == null) return errorMessage(res, 'A token must be provided');
     let promise = await repository.checkToken(refreshToken);
     if(promise == null) return errorMessage(res, 'Invalid token provided');
-    jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
+    jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET, (err, user) => {
         if(err) return res.sendStatus(403);
-        const accessToken = encodeToken({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, '5m');
+        const accessToken = encodeToken({ user_id: user.user_id }, config.ACCESS_TOKEN_SECRET, '5m');
         res.json({ accessToken: accessToken });
     })
     res.status(200);
