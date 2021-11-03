@@ -19,19 +19,22 @@ const decodeToken = (token) => {
     });
 }
 
-const tokenHandling = async (user, res) => {
+const tokenHandling = async (user, res, isInsert) => {
     const accessToken = encodeToken({ user_id: user.user_id }, config.ACCESS_TOKEN_SECRET, '5m');
     const refreshToken = encodeToken({ user_id: user.user_id }, config.REFRESH_TOKEN_SECRET, '1d');
     let date = new Date();
     date.setDate(date.getDate() + 1);
-    await repository.insertToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000), result => {
-        console.log(result);
-    })
-    .catch(err => {
-        console.error(err);
-    });
 
-    return res.json({ accessToken: accessToken, refreshToken: refreshToken });
+    if(isInsert) {
+        await repository.insertToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000)).catch(err => {console.error(err); return errorMessage(res, 'Logging user in failed'); });
+    } else {
+        await repository.updateToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000)).catch(err => {console.error(err); return errorMessage(res, 'Logging user in failed'); });
+    }
+
+    let atExpiry = Math.floor(new Date().getTime() + (5 * 60 * 1000));
+    let rtExpiry = Math.floor(date.getTime() / 1000);
+
+    return res.json({ access_token: accessToken, access_token_expiry: atExpiry, refresh_token: refreshToken, refresh_token_expiry: rtExpiry});
 }
 
 export const authMiddleware = async (req, res, next) => {
@@ -70,7 +73,7 @@ const errorMessage = (res, msg) => {
 }
 
 // https://stackoverflow.com/questions/12309019/javascript-how-to-do-something-every-full-hour/12309126
-export const refreshTokenStatus = async (res, msg) => {
+export const refreshTokenStatus = async () => {
     let d = new Date(),
         h = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours() + 1, 0, 0, 0),
         e = h - d;
@@ -80,11 +83,11 @@ export const refreshTokenStatus = async (res, msg) => {
 
     await repository.allTokens().then((rows) => {
         rows.forEach( async (row) => {
-            let newD = new Date(row.expires_at * 1000);
-            if(d > newD) {
-                console.log('expired token');
-                
-                await repository.delUserToken(row.user_id).catch(err => console.log(err));
+            if(row.token !== null) {
+                let newD = new Date(row.expires_at * 1000);
+                if(d > newD) {
+                    await repository.updateUserToken(row.user_id).catch(err => console.log(err));
+                }
             }
         })
     }).catch(err => console.log(err));
@@ -95,11 +98,14 @@ export const refresh = async (req, res) => {
     if(refreshToken == null) return errorMessage(res, 'A token must be provided');
     let promise = await repository.checkToken(refreshToken);
     if(promise == null) return errorMessage(res, 'Invalid token provided');
+    
     jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET, (err, user) => {
         if(err) return res.sendStatus(403);
+        let atExpiry = Math.floor(new Date().getTime() + (5 * 60 * 1000));
         const accessToken = encodeToken({ user_id: user.user_id }, config.ACCESS_TOKEN_SECRET, '5m');
-        res.json({ accessToken: accessToken });
+        res.json({ access_token: accessToken, access_token_expiry: atExpiry });
     })
+
     res.status(200);
 }
 
@@ -121,11 +127,9 @@ export const login = async (req, res) => {
         if(result) {
             const userToken = await repository.getUserIdToken(user.user_id);
             if(!userToken) {
-                return tokenHandling(user, res);
+                return tokenHandling(user, res, true);
             } else {
-                await repository.delUserToken(user.user_id).then((result) => {
-                    return tokenHandling(user, res);
-                }).catch(err => { console.log(err); return errorMessage(res, 'Logging user in failed'); });
+                return tokenHandling(user, res, false);
             }
         } else {
             return errorMessage(res, 'Invalid username or password');
@@ -155,11 +159,10 @@ export const register = async (req, res) => {
     bcrypt.hash(password, saltRounds, async (err, hash) => {
         if(!err) {
             let userID = crypto.randomBytes(16).toString("hex");
-            repository.insertUser(userID, username, email, hash).then((result) => {
-                repository.insertUserProfile(userID, first_name, last_name).then((result) => {
-                    console.log('New user has been added to the database');
+            repository.insertUser(userID, username, email, hash).then(() => {
+                repository.insertUserProfile(userID, first_name, last_name).then(() => {
                     return res.json({ message: 'User has been registered successfully' });
-                }).catch(err => { console.log(err); return errorMessage(res, 'Registering user failed');});
+                }).catch(err => { console.log(err); return errorMessage(res, 'Registering user profile failed');});
             }).catch(err => { console.log(err); return errorMessage(res, 'Registering user failed'); });
         } else {
             return errorMessage(res, 'Registering user failed');

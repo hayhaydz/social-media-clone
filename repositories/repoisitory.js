@@ -32,12 +32,16 @@ export default class {
         return dao.get("SELECT * FROM access WHERE user_id =?", [id]);
     }
 
+    static async checkToken(tkn) {
+        return dao.get("SELECT * FROM access WHERE token =?", [tkn]);
+    }
+
     static async delUserToken(id) {
         return dao.run("DELETE FROM access WHERE user_id =?", [id]);
     }
 
-    static async checkToken(tkn) {
-        return dao.get("SELECT * FROM access WHERE token =?", [tkn]);
+    static async updateUserToken(id, tkn, crt, exp) {
+        return dao.run("UPDATE access SET token =?, created_at =?, expires_at =? WHERE user_id =?", [tkn, crt, exp, id]);
     }
 
     static async insertToken(usrid, tkn, crt, exp) {
