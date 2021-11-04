@@ -22,3 +22,6 @@ dao.setupDbForDev();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authenticated, userRoutes);
+app.all('*', (req, res, next) => {
+    next(`Cannott find ${req.originalUrl} on this server!`);
+});

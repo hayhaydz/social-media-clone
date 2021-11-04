@@ -5,15 +5,15 @@ const saltRounds = 10;
 export default class {
 
     static async getUserByUsername(username) {
-        return dao.get("SELECT * FROM users WHERE username =?", [username]);
+        return dao.get("SELECT user_id, username, email FROM users WHERE username =?", [username]);
     }
 
     static async getUserByEmail(email) {
-        return dao.get("SELECT * FROM users WHERE email =?", [email]);
+        return dao.get("SELECT user_id, username, email FROM users WHERE email =?", [email]);
     }
 
     static async getUserById(id) {
-        return dao.get("SELECT * FROM users WHERE user_id =?", [id]);
+        return dao.get("SELECT user_id, username, email FROM users WHERE user_id =?", [id]);
     }
 
     static async insertUser(id, usrnm, pswd, eml) {
