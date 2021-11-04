@@ -12,32 +12,6 @@ const Login = ({ hostname }) => {
         });
 
         const { username, password } = userData;
-        const url = `${hostname}/api/auth/login`;
-
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ username, password })
-            })
-            if(response.status === 200) {
-                const { access_token, access_token_expiry } = await response.json();
-                login({ access_token, access_token_expiry });
-            } else {
-                console.log('Login has failed');
-                let err = new Error(response.statusText);
-                err.response = response;
-                throw err;
-            }
-        } catch (err) {
-            console.error('There was an error or you have network issues.', error);
-            const { response } = error;
-            setUserData(
-                Object.assign({}, userData, {
-                    error: response ? response.statusText : error.message
-                })
-            )
-        }
     }
     
 
