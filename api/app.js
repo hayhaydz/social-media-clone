@@ -4,13 +4,13 @@ import { authenticated, authMiddleware } from './controllers/auth.controller';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 
+const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
-const PORT = 3080;
 export const app = express();
 
-app.listen(PORT, () => console.log(`Server listening on the port:: ${PORT}`));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }))
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(authMiddleware);
 
 dao.setupDbForDev();
@@ -25,3 +25,6 @@ app.use('/api/user', authenticated, userRoutes);
 app.all('*', (req, res, next) => {
     next(`Cannott find ${req.originalUrl} on this server!`);
 });
+
+const PORT = process.env.PORT || 3080;
+app.listen(PORT, () => console.log(`Server listening on the port:: ${PORT}`));
