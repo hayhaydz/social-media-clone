@@ -46,7 +46,10 @@ export const authenticated = (req, res, next) => {
 
 const errorMessage = (res, msg) => {
     res.status(401);
-    return res.json({ error: msg });
+    return res.json({ 
+        status: 'fail',
+        message: msg 
+    });
 }
 
 export const register = async (req, res) => {
@@ -72,7 +75,7 @@ export const register = async (req, res) => {
             let userID = crypto.randomBytes(16).toString("hex");
             closed.insertUser(userID, username, email, hash).then(() => {
                 closed.insertUserProfile(userID, first_name, last_name).then(() => {
-                    return res.json({ message: 'User has been registered successfully' });
+                    return res.json({ status: 'success' });
                 }).catch(err => { console.log(err); return errorMessage(res, 'Registering user profile failed');});
             }).catch(err => { console.log(err); return errorMessage(res, 'Registering user failed'); });
         } else {
@@ -100,10 +103,8 @@ export const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
 
     if(!match) {
-        console.error('User password did not match');
         return errorMessage(res, 'Invalid username or password');
     }
-    console.warn('user: ' + JSON.stringify(user, null, 2));
 
     const accessToken = jwt.sign({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, { expiresIn: `${ACCESS_TOKEN_EXPIRES}m` });
     const refreshToken = jwt.sign({ user_id: user.user_id }, REFRESH_TOKEN_SECRET, { expiresIn: `${REFRESH_TOKEN_EXPIRES}m` });
@@ -118,6 +119,7 @@ export const login = async (req, res) => {
     });
 
     res.json({
+        status: 'success',
         access_token: accessToken, 
         access_token_expiry: Math.floor(new Date().getTime() + (ACCESS_TOKEN_EXPIRES * 60 * 1000)), 
         refresh_token: refreshToken
@@ -137,7 +139,8 @@ export const refresh = async (req, res) => {
         if(err) return res.sendStatus(403);
 
         const accessToken = jwt.sign({ user_id: user.user_id }, ACCESS_TOKEN_SECRET, { expiresIn: `${ACCESS_TOKEN_EXPIRES}m` });
-        res.json({ 
+        res.json({
+            status: 'success',
             access_token: accessToken,
             access_token_expiry: Math.floor(new Date().getTime() + (ACCESS_TOKEN_EXPIRES * 60 * 1000))
         });

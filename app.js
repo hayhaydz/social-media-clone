@@ -1,8 +1,9 @@
-import express from 'express';
+import express, { json } from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
+import { fail } from 'assert';
 
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
@@ -22,8 +23,18 @@ dao.setupDbForDev();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authenticated, userRoutes);
-app.all('*', (req, res, next) => {
-    next(`Cannott find ${req.originalUrl} on this server!`);
+
+app.use((req, res, next) => {
+    const error = new Error(`Cannot find ${req.originalUrl} on this server!`);
+    error.status = 404;
+    next(error);
+});
+
+app.use((error, req, res, next) => {
+    res.status(error.status || 500).send({
+        status: 'fail',
+        message: error.message || 'Internal Server Error'
+    });
 });
 
 const PORT = process.env.PORT || 3080;
