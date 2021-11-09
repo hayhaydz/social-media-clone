@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import Login from '../Login/Login';
+import Link from 'next/link';
 
 const App = () => {
     return (
         <div className="app">
-            <Login />
+            <h1>This is a super cool NextJS app</h1>
+            <Link href="/login"><a>Login Page</a></Link>
         </div>
     )
 }
