@@ -44,4 +44,8 @@ export class closed {
     static async checkToken(tkn) {
         return dao.get("SELECT * FROM access WHERE token =?", [tkn]);
     }
+
+    static async insertToken(usrid, tkn, crt, exp) {
+        return dao.run("INSERT INTO access (user_id, token, created_at, expires_at) VALUES (?, ?, ?, ?)", [usrid, tkn, crt, exp]);
+    }
 }
