@@ -1,4 +1,3 @@
-import React from 'react'
 import { Layout , LoginForm } from '../../components';
 
 const LoginPage = () => {

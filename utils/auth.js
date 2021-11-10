@@ -1,4 +1,5 @@
 import Router from 'next/router';
+import webRoutes from './webRoutes';
 
 let inMemory;
 
@@ -9,15 +10,15 @@ export const login = async ({ access_token, access_token_expiry }, noRedirect) =
     };
 
     if(!noRedirect)
-        Router.push('/app');
+        return Router.push(webRoutes.homepage);
 }
 
 export const auth = () => {
     const access_token = inMemory;
 
-    if(!access_token){
-        Router.push('/login');
-    }
-
     return access_token;
+}
+
+export const withAuthSync = () => {
+    
 }

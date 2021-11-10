@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 
-const App = () => {
+const App = () => {    
     return (
         <div className="app">
             <h1>This is a super cool NextJS app</h1>

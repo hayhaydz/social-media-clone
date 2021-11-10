@@ -15,17 +15,16 @@ const LoginForm = () => {
         const { username, password } = userData;
 
         const response = await post({username: username, password: password}, `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`);
-        response.json().then(data => {
+        response.json().then(async (data) => {
             if(data.status === 'success') {
-                const { access_token, access_token_expiry } = response.data;
+                const { access_token, access_token_expiry } = data;
                 await login({ access_token, access_token_expiry});
                 
                 console.log(data);
+            } else {
+                console.log('There was an error with logging the user in. Error message:', data.message);
             }
         })
-
-
-        console.log('There was an error with logging the user in');
     }
     
 
