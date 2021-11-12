@@ -19,8 +19,6 @@ const LoginForm = () => {
             if(data.status === 'success') {
                 const { access_token, access_token_expiry } = data;
                 await login({ access_token, access_token_expiry});
-                
-                console.log(data);
             } else {
                 console.log('There was an error with logging the user in. Error message:', data.message);
             }
