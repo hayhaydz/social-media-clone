@@ -128,6 +128,12 @@ export const login = async (req, res) => {
     res.status(200);
 }
 
+export const logout = async (req, res) => {
+
+    
+    res.status(200);
+}
+
 export const refresh = async (req, res) => {
     const refreshToken = req.cookies['refresh_token'];
 

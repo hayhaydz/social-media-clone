@@ -1,17 +1,18 @@
-import express, { json } from 'express';
+import express from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
-import { fail } from 'assert';
 
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 export const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors());
 app.use(authMiddleware);
 
 dao.setupDbForDev();
