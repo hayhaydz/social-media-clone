@@ -21,6 +21,10 @@ const LoginForm = () => {
                 await login({ access_token, access_token_expiry});
             } else {
                 console.log('There was an error with logging the user in. Error message:', data.message);
+                setUserData({
+                    ...userData,
+                    error: data.message
+                })
             }
         })
     }

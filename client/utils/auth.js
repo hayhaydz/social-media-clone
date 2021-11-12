@@ -22,7 +22,7 @@ const logout = async () => {
 
   // logout of all windows
   window.localStorage.setItem("logout", Date.now());
-  Router.push("/login");
+  Router.push(webRoutes.login);
 };
 
 const getDisplayName = (Component) =>
@@ -37,58 +37,58 @@ const withAuthSync = (WrappedComponent) => {
     static displayName = `withAuthSync(${getDisplayName(WrappedComponent)})`;
 
     static async getInitialProps(ctx) {
-      const token = await auth(ctx);
-      if (!inMemory) {
-        inMemory = token;
-      }
+        const token = await auth(ctx);
+        if (!inMemory) {
+            inMemory = token;
+        }
 
-      const componentProps =
-        WrappedComponent.getInitialProps &&
-        (await WrappedComponent.getInitialProps(ctx));
+        const componentProps =
+            WrappedComponent.getInitialProps &&
+            (await WrappedComponent.getInitialProps(ctx));
 
-      return { ...componentProps, accessToken: inMemory };
+        return { ...componentProps, accessToken: inMemory, privateAPIURL: process.env.PRIVATE_API_URL };
     }
 
     constructor(props) {
-      super(props);
-      this.syncLogout = this.syncLogout.bind(this);
+        super(props);
+        this.syncLogout = this.syncLogout.bind(this);
     }
 
     async componentDidMount() {
-      this.interval = setInterval(async () => {
-        if (inMemory) {
-          if (
-            subMinutes(new Date(inMemory.expiry), 1) <=
-            new Date(inMemory.expiry)
-          ) {
-            inMemory = null;
-            const token = await auth();
-            inMemory = token;
-          } else {
-            const token = await auth();
-            inMemory = token;
-          }
-        }
-      }, 60000);
+        this.interval = setInterval(async () => {
+            if (inMemory) {
+            if (
+                subMinutes(new Date(inMemory.expiry), 1) <=
+                new Date(inMemory.expiry)
+            ) {
+                inMemory = null;
+                const token = await auth();
+                inMemory = token;
+            } else {
+                const token = await auth();
+                inMemory = token;
+            }
+            }
+        }, 60000);
 
-      window.addEventListener("storage", this.syncLogout);
+        window.addEventListener("storage", this.syncLogout);
     }
 
     componentWillUnmount() {
-      clearInterval(this.interval);
-      window.removeEventListener("storage", this.syncLogout);
-      window.localStorage.removeItem("logout");
+        clearInterval(this.interval);
+        window.removeEventListener("storage", this.syncLogout);
+        window.localStorage.removeItem("logout");
     }
 
     syncLogout(event) {
-      if (event.key === "logout") {
-        console.log("logged out from storage!");
-        Router.push("/login");
-      }
+        if (event.key === "logout") {
+            console.log("logged out from storage!");
+            Router.push(webRoutes.login);
+        }
     }
 
     render() {
-      return <WrappedComponent {...this.props} />;
+        return <WrappedComponent {...this.props} />;
     }
   };
 };
@@ -126,31 +126,32 @@ const auth = async (ctx) => {
         } catch (error) {
             console.log(error);
             if(ctx && ctx.req) {
-                ctx.res.redirect('/login');
+                ctx.res.writeHead(302, { Location: webRoutes.login });
+                ctx.res.end();
             }
-            Router.push('/login');
+            Router.push(webRoutes.login);
         }
     }
 
-  const jwt_token = inMemory;
+    const jwt_token = inMemory;
 
-  if (!jwt_token) {
-    Router.push("/login");
-  }
+    if (!jwt_token) {
+        Router.push(webRoutes.login);
+    }
 
-  return jwt_token;
+    return jwt_token;
 };
 
 const getToken = () => {
-  return inMemory;
+    return inMemory;
 };
 
 const getCurrentPath = (originalURL) => {
-  if (typeof window === "object") {
-    return window.location.host;
-  } else {
-    return originalURL;
-  }
+    if (typeof window === "object") {
+        return window.location.host;
+    } else {
+        return originalURL;
+    }
 };
 
 export { login, logout, withAuthSync, auth, getToken, getCurrentPath };
