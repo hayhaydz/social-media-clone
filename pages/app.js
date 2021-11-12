@@ -1,24 +1,24 @@
-import React, { useReducer } from 'react';
+import React from 'react';
 import Router from 'next/router';
-import { Layout } from '../components';
-import { withAuthSync, getToken, auth, logout } from '../utils/auth';
+import useSWR from 'swr';
+import { withAuthSync } from '../utils/auth';
 import { getAuth } from '../utils/apiHandler';
+import { Layout } from '../components';
 
-const App = ({ accessToken }) => {
-    console.log(accessToken);
-    // console.log(process.env.PRIVATE_API_URL);
-
-    // const response = getAuth(`${process.env.PRIVATE_API_URL}/api/user/me`, accessToken);
-    // response.json().then(data => {
-    //     console.log(data);
-    // });
+const App = ({ accessToken, privateAPIURL }) => {
+    const fetcher = (url, token) => getAuth(url, token).then((r) => r.json());
+    const { data: user = {}, error } = useSWR([`${privateAPIURL}/api/user`, accessToken.token], fetcher);
+    if(error) return <div>Failed to find user...</div>;
 
     return (
         <Layout>
             <section>
                 <h1>This is the app page</h1>
+                <span>Welcome</span>
+                <p>{`${user.first_name} ${user.last_name}`}</p>
             </section>
         </Layout>
     )
 }
+
 export default withAuthSync(App)
