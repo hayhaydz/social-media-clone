@@ -1,7 +1,7 @@
 import Cookies from 'cookies';
 
 // THIS IS A PROXY LOGIN - PUBLIC API
-// PRIVATE API IS HIDDEN BEHIND Sever Side Rendering
+// PRIVATE API IS HIDDEN BEHIND SERVER SIDE RENDERING
 
 export default async (req, res) => {
     const cookies = new Cookies(req, res);
@@ -12,17 +12,21 @@ export default async (req, res) => {
 
     await fetch(`${process.env.PRIVATE_API_URL}/api/auth/login`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        headers: { 
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify(data)
     }).then((response) => {
         response.json().then(data => {
             if(data.status === 'success') {
-                cookies.set('refresh_token', data.refresh_token, {
-                    httpOnly: true,
-                    expires: data.refresh_token_expiry,
-                    sameSite: 'lax'
-                });
-    
+                // cookies.set('refresh_token', data.refresh_token, {
+                //     httpOnly: true,
+                //     expires: data.refresh_token_expiry,
+                //     sameSite: 'lax'
+                // });
+
+                res.setHeader('set-cookie', response.headers.get('set-cookie'));
                 res.status(200).json({
                     status: 'success',
                     access_token: data.access_token,
