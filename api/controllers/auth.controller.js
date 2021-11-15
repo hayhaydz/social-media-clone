@@ -110,7 +110,7 @@ export const login = async (req, res) => {
     const refreshToken = jwt.sign({ user_id: user.user_id }, REFRESH_TOKEN_SECRET, { expiresIn: `${REFRESH_TOKEN_EXPIRES}m` });
     let date = new Date(new Date().getTime() + (REFRESH_TOKEN_EXPIRES * 60 * 1000));
 
-    await closed.insertToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000)).catch(err => {console.error(err); return errorMessage(res, 'Logging user in failed'); });
+    await closed.insertToken(user.user_id, refreshToken, Date.now(), Math.floor(date.getTime() / 1000)).catch(err => { console.error(err); return errorMessage(res, 'Logging user in failed'); });
 
     res.cookie('refresh_token', refreshToken, {
         maxAge: REFRESH_TOKEN_EXPIRES * 60 * 1000,
@@ -121,15 +121,24 @@ export const login = async (req, res) => {
     res.json({
         status: 'success',
         access_token: accessToken, 
-        access_token_expiry: Math.floor(new Date().getTime() + (ACCESS_TOKEN_EXPIRES * 60 * 1000)), 
-        refresh_token: refreshToken
+        access_token_expiry: Math.floor(new Date().getTime() + (ACCESS_TOKEN_EXPIRES * 60 * 1000))
     });
 
     res.status(200);
 }
 
 export const logout = async (req, res) => {
+    const refreshToken = req.cookies['refresh_token'];
 
+    if(refreshToken == null) return errorMessage(res, 'A token must be provided');
+    let isToken = await closed.checkToken(refreshToken);
+    if(isToken == null) return errorMessage(res, 'Invalid token provided');
+    await closed.deleteToken(refreshToken);
+
+    res.json({
+        status: 'success',
+        message: 'User has been logged out successfully'
+    });
     
     res.status(200);
 }

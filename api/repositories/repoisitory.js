@@ -41,6 +41,10 @@ export class closed {
         return dao.run("INSERT INTO user_profiles (user_id, first_name, last_name) VALUES (?, ?, ?)", [id, frstnm, lstnm]);
     }
 
+    static async deleteToken(tkn) {
+        return dao.run("DELETE FROM access WHERE token =?", [tkn]);
+    }
+
     static async checkToken(tkn) {
         return dao.get("SELECT * FROM access WHERE token =?", [tkn]);
     }

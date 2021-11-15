@@ -17,8 +17,11 @@ const login = async ({ access_token, access_token_expiry }, noRedirect) => {
 
 const logout = async () => {
   inMemory = null;
-  const url = "/api/logout";
-  // call logout post request
+  const url = "/api/auth/logout";
+  const response = await fetch(url, {
+    method: 'POST',
+    credentials: 'include',
+  });
 
   // logout of all windows
   window.localStorage.setItem("logout", Date.now());
@@ -46,7 +49,7 @@ const withAuthSync = (WrappedComponent) => {
             WrappedComponent.getInitialProps &&
             (await WrappedComponent.getInitialProps(ctx));
 
-        return { ...componentProps, accessToken: inMemory, privateAPIURL: process.env.PRIVATE_API_URL };
+        return { ...componentProps, accessToken: inMemory };
     }
 
     constructor(props) {
@@ -126,8 +129,7 @@ const auth = async (ctx) => {
         } catch (error) {
             console.log(error);
             if(ctx && ctx.req) {
-                ctx.res.writeHead(302, { Location: webRoutes.login });
-                ctx.res.end();
+                return ctx.res.writeHead(302, { Location: webRoutes.login }).end();
             }
             Router.push(webRoutes.login);
         }
