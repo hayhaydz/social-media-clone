@@ -1,5 +1,5 @@
 export default {
-    homepage: '/app',
+    homepage: '/',
     about: '/about',
     profile: '/profile',
     login: '/login',

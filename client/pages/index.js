@@ -1,11 +1,15 @@
-import React from 'react';
-import { App, Layout } from '../components';
+import { withAuthSync } from '../utils/auth';
+import { App, Layout, LoginForm } from '../components';
 
-const Home = () => {
+const Home = ({ accessToken }) => {
   return (
     <Layout>
-      <App />
+      <h1>Welcome to super cool NextJS social media clone!</h1>
+      {!accessToken ?
+        <LoginForm /> : <App jwt={accessToken.token} />
+      }
+      
     </Layout>
   )
 }
-export default Home
+export default withAuthSync(Home)
