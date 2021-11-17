@@ -1,7 +1,7 @@
 # social-media-clone
 
 client
-`yarn run start:dev`
+`yarn run dev`
 
 api
 `yarn run dev`
