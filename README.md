@@ -1,7 +1,7 @@
 # social-media-clone
 
-client
-`yarn run dev`
+to install packages
+`npm i`
 
-api
-`yarn run dev`
+in client folder and api folder
+`npm run dev`
