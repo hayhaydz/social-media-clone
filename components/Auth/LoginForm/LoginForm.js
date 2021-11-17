@@ -32,37 +32,40 @@ const LoginForm = () => {
 
 
     return (
-        <form action="#" id="form" name="form" onSubmit={handleSubmit}>
-            <label htmlFor="username">Username</label>
-            <input 
-                type="text" 
-                id="username" 
-                name="username"
-                value={userData.username}
-                onChange={e =>
-                    setUserData({
-                        ...userData,
-                        username: e.target.value
-                    })
-                }
-            />
-            <label htmlFor="password">Password</label>
-            <input 
-                type="password" 
-                id="password" 
-                name="password" 
-                value={userData.password}
-                onChange={e => 
-                    setUserData({
-                        ...userData,
-                        password: e.target.value
-                    })
-                }
-            />
-            <button type="submit">Login</button>
+        <section className="loginForm">
+            <h3>Login below</h3>
+            <form action="#" id="form" name="form" onSubmit={handleSubmit}>
+                <label htmlFor="username">Username</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    name="username"
+                    value={userData.username}
+                    onChange={e =>
+                        setUserData({
+                            ...userData,
+                            username: e.target.value
+                        })
+                    }
+                />
+                <label htmlFor="password">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    value={userData.password}
+                    onChange={e => 
+                        setUserData({
+                            ...userData,
+                            password: e.target.value
+                        })
+                    }
+                />
+                <button type="submit">Login</button>
 
-            {userData.error && <p className="error">Error: {userData.error}</p>}
-        </form>
+                {userData.error && <p className="error">Error: {userData.error}</p>}
+            </form>
+        </section>
     )
 }
 export default LoginForm

@@ -25,7 +25,7 @@ const logout = async () => {
 
   // logout of all windows
   window.localStorage.setItem("logout", Date.now());
-  Router.push(webRoutes.login);
+  Router.push(webRoutes.homepage);
 };
 
 const getDisplayName = (Component) =>
@@ -60,17 +60,17 @@ const withAuthSync = (WrappedComponent) => {
     async componentDidMount() {
         this.interval = setInterval(async () => {
             if (inMemory) {
-            if (
-                subMinutes(new Date(inMemory.expiry), 1) <=
-                new Date(inMemory.expiry)
-            ) {
-                inMemory = null;
-                const token = await auth();
-                inMemory = token;
-            } else {
-                const token = await auth();
-                inMemory = token;
-            }
+                if (
+                    subMinutes(new Date(inMemory.expiry), 1) <=
+                    new Date(inMemory.expiry)
+                ) {
+                    inMemory = null;
+                    const token = await auth();
+                    inMemory = token;
+                } else {
+                    const token = await auth();
+                    inMemory = token;
+                }
             }
         }, 60000);
 
@@ -86,7 +86,7 @@ const withAuthSync = (WrappedComponent) => {
     syncLogout(event) {
         if (event.key === "logout") {
             console.log("logged out from storage!");
-            Router.push(webRoutes.login);
+            Router.push(webRoutes.homepage);
         }
     }
 
@@ -128,17 +128,18 @@ const auth = async (ctx) => {
             }
         } catch (error) {
             console.log(error);
-            if(ctx && ctx.req) {
-                return ctx.res.writeHead(302, { Location: webRoutes.login }).end();
-            }
-            Router.push(webRoutes.login);
+            // if(ctx && ctx.req) {
+            //     return ctx.res.writeHead(302, { Location: webRoutes.homepage }).end();
+            // }
+            // Router.push(webRoutes.homepage);
         }
     }
 
-    const jwt_token = inMemory;
+    let jwt_token = inMemory;
 
     if (!jwt_token) {
-        Router.push(webRoutes.login);
+        // Router.push(webRoutes.homepage);
+        jwt_token = null;
     }
 
     return jwt_token;
