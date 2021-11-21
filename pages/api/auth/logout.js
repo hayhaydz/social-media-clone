@@ -1,6 +1,6 @@
 import Cookies from 'cookies';
 
-// THIS IS A PROXY LOGOUT - PUBLIC API
+// THIS IS A PROXY API- PUBLIC API
 // PRIVATE API IS HIDDEN BEHIND SERVER SIDE RENDERING
 
 export default async (req, res) => {
