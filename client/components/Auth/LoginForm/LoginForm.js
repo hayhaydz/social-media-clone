@@ -28,11 +28,9 @@ const LoginForm = () => {
             }
         })
     }
-    
-
 
     return (
-        <section className="loginForm">
+        <div className="loginForm">
             <h3>Login below</h3>
             <form action="#" id="form" name="form" onSubmit={handleSubmit}>
                 <label htmlFor="username">Username</label>
@@ -47,6 +45,7 @@ const LoginForm = () => {
                             username: e.target.value
                         })
                     }
+                    required
                 />
                 <label htmlFor="password">Password</label>
                 <input 
@@ -60,12 +59,13 @@ const LoginForm = () => {
                             password: e.target.value
                         })
                     }
+                    required
                 />
                 <button type="submit">Login</button>
 
                 {userData.error && <p className="error">Error: {userData.error}</p>}
             </form>
-        </section>
+        </div>
     )
 }
 export default LoginForm
