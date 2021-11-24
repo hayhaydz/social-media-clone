@@ -18,6 +18,18 @@ export class open {
     static async getUserProfileById(id) {
         return dao.get("SELECT first_name, last_name, description FROM user_profiles WHERE user_id =?", [id]);
     }
+
+    static async getPosts() {
+        return dao.all("SELECT * FROM posts");
+    }
+
+    static async getPostById(id) {
+        return dao.get("SELECT * FROM posts WHERE user_id =?", [id]);
+    }
+
+    static async insertPost(id, title, content, crt) {
+        return dao.run("INSERT INTO posts (user_id, title, content, date_published) VALUES (?, ?, ?, ?)", [id, title, content, crt]);
+    }
 }
 
 export class closed {
