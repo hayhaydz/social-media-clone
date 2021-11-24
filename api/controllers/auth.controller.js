@@ -89,7 +89,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
     const { username, email, password } = req.body;
 
-    let user;
+    let user; 
     if(username !== undefined) {
         user = await closed.getUserByUsername(username);
     } else if (email !== undefined) {

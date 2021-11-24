@@ -77,6 +77,14 @@ export default class {
                     created_at INTEGER,
                     expires_at INTEGER,
                     FOREIGN KEY(user_id) REFERENCES users(user_id)
+                )`,
+                `CREATE TABLE IF NOT EXISTS posts (
+                    post_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    user_id BLOB,
+                    title TEXT,
+                    content TEXT,
+                    date_published INTEGER,
+                    FOREIGN KEY(user_id) REFERENCES users(user_id)
                 )`
             ];
 
@@ -92,9 +100,11 @@ export default class {
                     bcrypt.hash(password, saltRounds, ((err, hash) => {
                         if(!err) {
                             let userID = crypto.randomBytes(16).toString("hex");
+                            let currentTime = Date.now();
                             const stmts = [
                                 `INSERT INTO users (user_id, username, password) VALUES ('${userID}', 'foo', '${hash}');`,
-                                `INSERT INTO user_profiles (user_id, first_name, last_name) VALUES ('${userID}', 'foo', 'bar');`
+                                `INSERT INTO user_profiles (user_id, first_name, last_name) VALUES ('${userID}', 'foo', 'bar');`,
+                                `INSERT INTO posts (user_id, title, content, date_published) VALUES ('${userID}', 'Sample post title', 'foo bar', ${currentTime});`
                             ];
 
                             this.runBatch(stmts).then(results => {
