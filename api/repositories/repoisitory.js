@@ -24,11 +24,15 @@ export class open {
     }
 
     static async getPostById(id) {
-        return dao.get("SELECT * FROM posts WHERE user_id =?", [id]);
+        return dao.get("SELECT * FROM posts WHERE post_id =?", [id]);
     }
 
     static async insertPost(id, title, content, crt) {
         return dao.run("INSERT INTO posts (user_id, title, content, date_published) VALUES (?, ?, ?, ?)", [id, title, content, crt]);
+    }
+
+    static async updatePost(id, title, content) {
+        return dao.run("UPDATE posts SET title = ?, content = ? WHERE post_id = ?", [title, content, id]);
     }
 }
 
