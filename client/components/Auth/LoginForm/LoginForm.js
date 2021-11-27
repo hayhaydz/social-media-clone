@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { login } from '../../../utils/auth';
 import { post } from '../../../utils/apiHandler';
+import Error from '../../Alert/Error/Error';
 
 const LoginForm = () => {
     const [userData, setUserData] = useState({ username: '', password: '', error: '' });
@@ -30,13 +31,14 @@ const LoginForm = () => {
     }
 
     return (
-        <div className="loginForm">
+        <div className="p-10 card bg-base-200 max-w-md">
             <h3>Login below</h3>
-            <form action="#" id="form" name="form" onSubmit={handleSubmit}>
-                <label htmlFor="username">Username</label>
+            <form action="#" id="form" className="form-control" name="form" onSubmit={handleSubmit}>
+                <label htmlFor="username" className="label">Username</label>
                 <input 
                     type="text" 
-                    id="username" 
+                    id="username"
+                    className="input mb-4"
                     name="username"
                     value={userData.username}
                     onChange={e =>
@@ -47,10 +49,11 @@ const LoginForm = () => {
                     }
                     required
                 />
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password" className="label">Password</label>
                 <input 
                     type="password" 
-                    id="password" 
+                    id="password"
+                    className="input mb-4"
                     name="password" 
                     value={userData.password}
                     onChange={e => 
@@ -61,9 +64,16 @@ const LoginForm = () => {
                     }
                     required
                 />
-                <button type="submit">Login</button>
+                <button 
+                    type="submit" 
+                    className="btn btn-primary"
+                >
+                    Login
+                </button>
 
-                {userData.error && <p className="error">Error: {userData.error}</p>}
+                {userData.error && 
+                    <Error text={userData.error}/>
+                }
             </form>
         </div>
     )

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { post } from '../../../utils/apiHandler';
+import { Error, Success } from '../../index';
 
 const RegisterForm = () => {
-    const [userData, setUserData] = useState({ username: '', email: '', password: '', first_name: '', last_name: '', response: '' });
+    const [userData, setUserData] = useState({ username: '', email: '', password: '', first_name: '', last_name: '', status: '', response: '' });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setUserData({
             ...userData,
+            status: '',
             response: ''
         });
 
@@ -17,19 +19,21 @@ const RegisterForm = () => {
         response.json().then(async (data) => {
             setUserData({
                 ...userData,
+                status: data.status,
                 response: data.message
-            })
-        })
+            });
+        });
     }
 
     return (
-        <div className="registerForm">
+        <div className="p-10 card bg-base-200 max-w-md">
             <h3>Register below</h3>
-            <form action="#" id="form" name="form" onSubmit={handleSubmit}>
-                <label htmlFor="username">Username</label>
+            <form action="#" id="form" className="form-control" name="form" onSubmit={handleSubmit}>
+                <label htmlFor="username" className="label">Username</label>
                 <input 
                     type="text" 
-                    id="username" 
+                    id="username"
+                    className="input mb-4"
                     name="username"
                     value={userData.username}
                     onChange={e =>
@@ -40,10 +44,11 @@ const RegisterForm = () => {
                     }
                     required
                 />
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email" className="label">Email</label>
                 <input 
                     type="email" 
-                    id="email" 
+                    id="email"
+                    className="input mb-4"
                     name="email"
                     value={userData.email}
                     onChange={e =>
@@ -54,10 +59,11 @@ const RegisterForm = () => {
                     }
                     required
                 />
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password" className="label">Password</label>
                 <input 
                     type="password" 
-                    id="password" 
+                    id="password"
+                    className="input mb-4"
                     name="password" 
                     value={userData.password}
                     onChange={e => 
@@ -68,10 +74,11 @@ const RegisterForm = () => {
                     }
                     required
                 />
-                <label htmlFor="first_name">First Name</label>
+                <label htmlFor="first_name" className="label">First Name</label>
                 <input 
                     type="text" 
-                    id="first_name" 
+                    id="first_name"
+                    className="input mb-4"
                     name="first_name"
                     value={userData.first_name}
                     onChange={e =>
@@ -82,10 +89,11 @@ const RegisterForm = () => {
                     }
                     required
                 />
-                <label htmlFor="last_name">Last Name</label>
+                <label htmlFor="last_name" className="label">Last Name</label>
                 <input 
                     type="text" 
-                    id="last_name" 
+                    id="last_name"
+                    className="input mb-8"
                     name="last_name"
                     value={userData.last_name}
                     onChange={e =>
@@ -96,9 +104,12 @@ const RegisterForm = () => {
                     }
                     required
                 />
-                <button type="submit">Register</button>
+                <button type="submit" className="btn btn-primary">Register</button>
 
-                {userData.response && <p className="message">Message: {userData.response}</p>}
+                {userData.response ?
+                    userData.status == 'fail' ? <Error text={userData.response}/> : <Success text={userData.response} />
+                    : <label ></label>
+                }
             </form>
         </div>
     )

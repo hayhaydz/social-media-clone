@@ -6,10 +6,15 @@ const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
 
     return (
-        <section className="auth">
+        <section className="auth m-auto">
             {isLogin ? <LoginForm /> : <RegisterForm />}
 
-            <button onClick={()=>setIsLogin(!isLogin)}>{isLogin ? 'Create a new user' : 'Login to user'}</button>
+            <button 
+                className="btn btn-link" 
+                onClick={()=>setIsLogin(!isLogin)}
+            >
+                {isLogin ? 'Create a new user' : 'Login to user'}
+            </button>
         </section>
     )
 }
