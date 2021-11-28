@@ -6,7 +6,3 @@ to install packages
 
 to start development servers
 `npm run dev`
-
-documentation
-https://tailwindcss.com/docs/
-https://daisyui.com/components/
