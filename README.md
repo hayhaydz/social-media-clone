@@ -1,7 +1,8 @@
 # social-media-clone
 
+in both client folder and api folder
 to install packages
 `npm i`
 
-in client folder and api folder
+to start development servers
 `npm run dev`
