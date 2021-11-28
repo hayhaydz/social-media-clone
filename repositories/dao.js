@@ -81,8 +81,7 @@ export default class {
                 `CREATE TABLE IF NOT EXISTS posts (
                     post_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     user_id BLOB,
-                    title TEXT,
-                    content TEXT,
+                    text TEXT,
                     date_published INTEGER,
                     FOREIGN KEY(user_id) REFERENCES users(user_id)
                 )`
@@ -104,7 +103,7 @@ export default class {
                             const stmts = [
                                 `INSERT INTO users (user_id, username, password) VALUES ('${userID}', 'foo', '${hash}');`,
                                 `INSERT INTO user_profiles (user_id, first_name, last_name) VALUES ('${userID}', 'foo', 'bar');`,
-                                `INSERT INTO posts (user_id, title, content, date_published) VALUES ('${userID}', 'Sample post title', 'foo bar', ${currentTime});`
+                                `INSERT INTO posts (user_id, text, date_published) VALUES ('${userID}', 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, esse excepturi maxime fugiat eveniet est quos voluptatum illum. Ullam accusamus quas itaque quasi beatae laborum repudiandae maxime minima, ex provident!', ${currentTime});`
                             ];
 
                             this.runBatch(stmts).then(results => {
