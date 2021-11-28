@@ -1,5 +1,4 @@
 import useSWR from 'swr';
-import { logout } from '../../utils/auth';
 import { getAuth } from '../../utils/apiHandler';
 
 const App = ({ jwt }) => {
@@ -10,7 +9,6 @@ const App = ({ jwt }) => {
 
     return (
         <section className="app">
-            <button className="btn btn-primary" onClick={logout}>Logout</button>
             <h1>This is the app page</h1>
             <span>Welcome</span>
             <p>{`${user.first_name} ${user.last_name}`}</p>

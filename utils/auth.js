@@ -1,6 +1,6 @@
 import { Component } from "react";
 import Router from "next/router";
-import nextCookie from "next-cookies";
+import Cookies from 'cookies';
 import webRoutes from "./webRoutes";
 import { post } from './apiHandler';
 
@@ -25,7 +25,7 @@ const logout = async () => {
 
   // logout of all windows
   window.localStorage.setItem("logout", Date.now());
-  Router.push(webRoutes.homepage);
+  Router.push(webRoutes.login);
 };
 
 const getDisplayName = (Component) =>
@@ -49,7 +49,7 @@ const withAuthSync = (WrappedComponent) => {
             WrappedComponent.getInitialProps &&
             (await WrappedComponent.getInitialProps(ctx));
 
-        return { ...componentProps, accessToken: inMemory };
+        return { ...componentProps, auth: inMemory };
     }
 
     constructor(props) {
@@ -86,7 +86,7 @@ const withAuthSync = (WrappedComponent) => {
     syncLogout(event) {
         if (event.key === "logout") {
             console.log("logged out from storage!");
-            Router.push(webRoutes.homepage);
+            Router.push(webRoutes.login);
         }
     }
 
@@ -105,7 +105,6 @@ const auth = async (ctx) => {
         const headers = ctx && ctx.req ? {
             'Cookie': ctx.req.headers.cookie
         } : {}
-        
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/refresh-token`, {
                 method: 'POST',
@@ -129,16 +128,15 @@ const auth = async (ctx) => {
         } catch (error) {
             console.log(error);
             // if(ctx && ctx.req) {
-            //     return ctx.res.writeHead(302, { Location: webRoutes.homepage }).end();
+            //     ctx.res.writeHead(302, { Location: webRoutes.login }).end();
             // }
-            // Router.push(webRoutes.homepage);
+            // Router.push(webRoutes.login);
         }
     }
 
     let jwt_token = inMemory;
 
     if (!jwt_token) {
-        // Router.push(webRoutes.homepage);
         jwt_token = null;
     }
 
