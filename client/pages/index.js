@@ -1,16 +1,22 @@
+import { useRouter } from 'next/router';
 import { withAuthSync } from '../utils/auth';
-import { App, Layout, Auth } from '../components';
-import 'tailwindcss/tailwind.css';
+import { Layout, Auth } from '../components';
 
-const Home = ({ accessToken }) => {
-  return (
-    <Layout>
-      <h1 className="mt-8">Welcome to super cool NextJS social media clone!</h1>
-      {!accessToken ?
-        <Auth /> : <App jwt={accessToken.token} />
-      }
-      
-    </Layout>
-  )
+const Index = ({ auth }) => {
+  const router = useRouter();
+  if(auth) {
+    if (typeof window !== 'undefined') {
+        router.push('/home');
+    }
+  } else {
+    return (
+      <Layout auth={auth}>
+        <h1>Welcome to super cool NextJS social media clone!</h1>
+        <Auth />
+      </Layout>
+    )
+  }
+
+  return <div></div>
 }
-export default withAuthSync(Home)
+export default withAuthSync(Index);

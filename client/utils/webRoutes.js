@@ -1,8 +1,8 @@
 export default {
-    homepage: '/',
+    homepage: '/home',
     about: '/about',
     profile: '/profile',
-    login: '/login',
+    login: '/',
     register: '/register',
     unauthorised: '/unauthorised'
 }
