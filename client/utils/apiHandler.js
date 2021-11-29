@@ -7,7 +7,7 @@ export const getAuth = async (url, token) => {
     return response;
 }
 
-export const postAuth = async (data, url, token) => {
+export const postAuth = async (data, url, token) => { 
     const response = await fetch(url, {
         method: 'POST',
         headers: { 

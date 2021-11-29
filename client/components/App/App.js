@@ -1,7 +1,8 @@
 import useSWR from 'swr';
 import { getAuth } from '../../utils/apiHandler';
+import { ViewPosts } from '../';
 
-const App = ({ jwt }) => {
+const App = ({ jwt, isRender }) => {
     const fetcher = (url, token) => getAuth(url, token).then((r) => r.json());
     const { data: user = {}, isLoading, isError } = useSWR([`${process.env.PRIVATE_API_URL}/api/user`, jwt], fetcher);
     if(isLoading) return <div>Loading...</div>
@@ -9,9 +10,9 @@ const App = ({ jwt }) => {
 
     return (
         <section className="app">
-            <h1>This is the app page</h1>
-            <span>Welcome</span>
-            <p>{`${user.first_name} ${user.last_name}`}</p>
+            <span className="block mb-4">Welcome</span>
+            <h1>{`${user.first_name} ${user.last_name}`}</h1>
+            <ViewPosts jwt={jwt} isRender={isRender}/>
         </section>
     )
 }
