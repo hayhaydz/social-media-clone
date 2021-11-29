@@ -27,7 +27,7 @@ const LoginForm = () => {
                     error: data.message
                 })
             }
-        })
+        });
     }
 
     return (
@@ -63,7 +63,7 @@ const LoginForm = () => {
                         })
                     }
                     required
-                />
+                />  
                 <button 
                     type="submit" 
                     className="btn btn-primary"
