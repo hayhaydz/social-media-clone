@@ -3,8 +3,9 @@ import dao from '../repositories/dao';
 
 export const getPosts = async (req, res) => {
     let posts = await open.getPosts();
+    Object.entries(posts);
 
-    return res.status(200).send({ status: 'success', ...posts });
+    return res.status(200).send({ status: 'success', posts });
 };
 
 export const getPostById = async (req, res) => {

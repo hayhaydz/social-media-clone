@@ -20,7 +20,7 @@ export class open {
     }
 
     static async getPosts() {
-        return dao.all("SELECT * FROM posts");
+        return dao.all("SELECT post_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id ORDER BY post_id DESC");
     }
 
     static async getPostById(id) {
