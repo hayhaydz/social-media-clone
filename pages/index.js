@@ -10,7 +10,7 @@ const Index = ({ auth }) => {
     }
   } else {
     return (
-      <Layout auth={auth.token}>
+      <Layout>
         <h1>Welcome to super cool NextJS social media clone!</h1>
         <Auth />
       </Layout>
