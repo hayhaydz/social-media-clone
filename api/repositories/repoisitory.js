@@ -20,7 +20,7 @@ export class open {
     }
 
     static async getPosts() {
-        return dao.all("SELECT post_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id ORDER BY post_id DESC");
+        return dao.all("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id ORDER BY post_id DESC");
     }
 
     static async getPostById(id) {
@@ -33,6 +33,10 @@ export class open {
 
     static async updatePost(id, text) {
         return dao.run("UPDATE posts SET text = ? WHERE post_id = ?", [text, id]);
+    }
+
+    static async deletePost(post_id) {
+        return dao.run("DELETE FROM posts WHERE post_id =?", [post_id]);
     }
 }
 
