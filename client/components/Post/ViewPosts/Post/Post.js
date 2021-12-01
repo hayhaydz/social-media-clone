@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DotsVerticalIcon } from "@heroicons/react/outline";
 import { Modal, EditPost, DeletePost } from '../../../';
 
-const Post = ({ post_id, user_id, usersID, first_name, last_name, username, text, date_published, jwt }) => {
+const Post = ({ post_id, user_id, usersID, first_name, last_name, username, text, date_published, jwt, setMessage }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
@@ -29,12 +29,12 @@ const Post = ({ post_id, user_id, usersID, first_name, last_name, username, text
                 }
             </div>
 
-            <p>{text}</p>
+            <p className="break-words">{text}</p>
             {isEditing &&
-                <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} /></Modal>
+                <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} setMessage={setMessage} /></Modal>
             }
             {isDeleting &&
-                <Modal id="deleteModal" ><DeletePost jwt={jwt} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} /></Modal>
+                <Modal id="deleteModal" ><DeletePost jwt={jwt} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} setMessage={setMessage} /></Modal>
             }
         </div>
     )

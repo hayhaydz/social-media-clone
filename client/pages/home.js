@@ -1,9 +1,12 @@
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { withAuthSync } from '../utils/auth';
 import webRoutes from '../utils/webRoutes';
 import { Layout, App } from '../components';
 
 const Home = ({ auth }) => {
+    const [message, setMessage] = useState('');
+
     const router = useRouter();
     if(!auth) {
         if (typeof window !== 'undefined') {
@@ -11,8 +14,8 @@ const Home = ({ auth }) => {
         }
     } else {
         return (
-            <Layout auth={auth.token} >
-                <App jwt={auth.token} />
+            <Layout auth={auth.token} setMessage={setMessage} >
+                <App jwt={auth.token} message={message} setMessage={setMessage} />
             </Layout>
         )
     }
