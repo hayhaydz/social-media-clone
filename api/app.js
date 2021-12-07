@@ -1,7 +1,7 @@
 import express from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
-import { authRoutes, userRoutes, postRoutes } from './routes';
+import { authRoutes, userRoutes, postRoutes, postLikesRoutes, postCommentsRoutes } from './routes';
 // import authRoutes from './routes/auth.routes';
 
 const cookieParser = require('cookie-parser');
@@ -24,6 +24,8 @@ dao.setupDbForDev();
 app.use('/api/auth', authRoutes);
 app.use('/api/user', authenticated, userRoutes);
 app.use('/api/post', authenticated, postRoutes);
+app.use('/api/post', authenticated, postLikesRoutes);
+app.use('/api/post', authenticated, postCommentsRoutes);
 
 app.use((req, res, next) => {
     const error = new Error(`Cannot find ${req.originalUrl} on this server!`);

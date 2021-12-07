@@ -1,6 +1,4 @@
 import dao from './dao';
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 
 export class open {
     static async getUserByUsername(username) {
@@ -27,16 +25,40 @@ export class open {
         return dao.get("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id WHERE post_id =? ORDER BY post_id DESC", [id]);
     }
 
-    static async insertPost(id, text, crt) {
-        return dao.run("INSERT INTO posts (user_id, text, date_published) VALUES (?, ?, ?)", [id, text, crt]);
+    static async insertPost(id, text, at) {
+        return dao.run("INSERT INTO posts (user_id, text, date_published) VALUES (?, ?, ?)", [id, text, at]);
     }
 
     static async updatePost(id, text) {
         return dao.run("UPDATE posts SET text = ? WHERE post_id = ?", [text, id]);
     }
 
-    static async deletePost(post_id) {
-        return dao.run("DELETE FROM posts WHERE post_id =?", [post_id]);
+    static async deletePost(postID) {
+        return dao.run("DELETE FROM posts WHERE post_id =?", [postID]);
+    }
+
+    static async insertPostLikes(userID, postID, at) {
+        return dao.run("INSERT INTO post_likes (user_id, post_id, committed_at) VALUES (?, ?, ?)", [userID, postID, at]);
+    }
+
+    static async removePostLikes(userID, postID) {
+        return dao.run("DELETE FROM post_likes WHERE user_id = ? AND post_id = ?", [userID, postID]);
+    }
+
+    static async checkPostLikes(userID, postID) {
+        return dao.get("SELECT like_id FROM post_likes WHERE user_id = ? AND post_id = ?", [userID, postID]);
+    }
+
+    static async insertPostComments(userID, postID, text, at) {
+        return dao.run("INSERT INTO post_comments (user_id, post_id, text, committed_at) VALUES (?, ?, ?, ?)", [userID, postID, text, at]);
+    }
+
+    static async removePostComments(id) {
+        return dao.run("DELETE FROM post_comments WHERE comment_id = ?", [id]);
+    }
+
+    static async checkPostComments(id) {
+        return dao.get("SELECT post_id from post_comments WHERE comment_id = ?", [id]);
     }
 }
 
