@@ -4,7 +4,7 @@ import { withAuthSync } from '../utils/auth';
 import webRoutes from '../utils/webRoutes';
 import { Layout, App } from '../components';
 
-const Home = ({ auth }) => {
+const Home = ({ auth, currentUser }) => {
     const [message, setMessage] = useState('');
 
     const router = useRouter();
@@ -15,7 +15,7 @@ const Home = ({ auth }) => {
     } else {
         return (
             <Layout auth={auth.token} setMessage={setMessage} >
-                <App jwt={auth.token} message={message} setMessage={setMessage} />
+                <App jwt={auth.token} currentUser={currentUser} message={message} setMessage={setMessage} />
             </Layout>
         )
     }

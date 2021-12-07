@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import useSWR from 'swr';
 import { getAuth } from '../../../utils/apiHandler';
 import { Error, Success } from '../../';
-import Post from './Post/Post';
+import Post from '../Post';
 
-const ViewPost = ({ jwt, user_id, message, setMessage }) => {
+const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
 
     useEffect(() => {
         if(message !== '') {
@@ -22,7 +23,7 @@ const ViewPost = ({ jwt, user_id, message, setMessage }) => {
     if(isError) return <div>Fetching posts has failed</div>;
 
     return (
-        <div>
+        <div className="posts flex flex-col items-center">
             {message !== '' &&
                 <div className="mb-8">
                     <Success text={message} />
@@ -30,7 +31,7 @@ const ViewPost = ({ jwt, user_id, message, setMessage }) => {
             }
             {response.data &&
                 response.data.map((post, index) => {
-                    return <Post key={index} {...post} usersID={user_id} jwt={jwt} setMessage={setMessage}/>
+                    return <Link href={`/post/${post.post_id}`}><a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full"><Post key={index} {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage}/></a></Link>
                 })
             }
         </div>
