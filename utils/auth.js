@@ -44,12 +44,13 @@ const withAuthSync = (WrappedComponent) => {
         if (!inMemory) {
             inMemory = token;
         }
+        const user = await getUser();
 
         const componentProps =
             WrappedComponent.getInitialProps &&
             (await WrappedComponent.getInitialProps(ctx));
 
-        return { ...componentProps, auth: inMemory };
+        return { ...componentProps, auth: inMemory, currentUser: user };
     }
 
     constructor(props) {
@@ -142,6 +143,39 @@ const auth = async (ctx) => {
 
     return jwt_token;
 };
+
+const getUser = async () => {
+    if(inMemory) {
+        const headers = {
+            'Access-Token': inMemory.token
+        }
+        try {
+            const response = await fetch(`${process.env.PRIVATE_API_URL}/api/user`, {
+                method: 'GET',
+                headers: {
+                    ...headers
+                }
+            });
+
+            if(response.status === 200) {
+                return response.json().then(result => {
+                    return result.data;
+                })
+            } else {
+                const { message } = await response.json();
+                let error = new Error(message);
+                error.response = response;
+                throw error;
+            }
+        } catch (error) {
+            console.log(error);
+            // if(ctx && ctx.req) {
+            //     ctx.res.writeHead(302, { Location: webRoutes.login }).end();
+            // }
+            // Router.push(webRoutes.login);
+        }
+    }
+}
 
 const getToken = () => {
     return inMemory;

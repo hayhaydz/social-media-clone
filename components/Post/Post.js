@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import { DotsVerticalIcon } from "@heroicons/react/outline";
-import { Modal, EditPost, DeletePost } from '../../../';
+import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, usersID, first_name, last_name, username, text, date_published, jwt, setMessage }) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, currentUsersID, jwt, setMessage, isSingle}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
 
     return (
-        <div className="card bg-neutral p-6 mb-16 max-w-xl m-auto overflow-visible">
+        <div className={'card bg-neutral p-6 overflow-visible' + (isSingle ? 'w-full !inline-block mb-0' : 'mb-16 max-w-xl m-auto transition-colors hover:bg-neutral-focus')}>
             <div className="flex items-center">
                 <h3 className="!m-0 !mr-4">{first_name} {last_name}</h3>
                 <span className="text-gray-400">@{username}</span>
                 <span className="mx-4 text-gray-400 font-bold"> · </span>
                 <span className="text-gray-400 mr-auto">{date}</span>
-                {user_id === usersID &&
+                {user_id === currentUsersID &&
                     <div className="dropdown dropdown-end">
                         <button tabIndex="0" className="btn btn-ghost btn-square"><DotsVerticalIcon className="w-6 h-6 mx-2" /></button>
                         <ul tabIndex="0" className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-36 mt-8 overflow-visible">
