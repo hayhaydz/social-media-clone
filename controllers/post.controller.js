@@ -4,12 +4,18 @@ import dao from '../repositories/dao';
 export const getPosts = async (req, res) => {
     let posts = await open.getPosts();
     Object.entries(posts);
+    if(!posts) {
+        return res.status(200).send({ status: 'fail' });
+    }
 
     return res.status(200).send({ status: 'success', data: posts });
 };
 
 export const getPostById = async (req, res) => {
     let post = await open.getPostById(req.params.id);
+    if(!post) {
+        return res.status(200).send({ status: 'fail' });
+    }
 
     return res.status(200).send({ status: 'success', data: post });
 };

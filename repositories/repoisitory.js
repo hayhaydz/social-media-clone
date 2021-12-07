@@ -24,7 +24,7 @@ export class open {
     }
 
     static async getPostById(id) {
-        return dao.get("SELECT * FROM posts WHERE post_id =?", [id]);
+        return dao.get("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id WHERE post_id =? ORDER BY post_id DESC", [id]);
     }
 
     static async insertPost(id, text, crt) {
