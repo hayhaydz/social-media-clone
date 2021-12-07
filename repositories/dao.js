@@ -84,6 +84,23 @@ export default class {
                     text TEXT,
                     date_published INTEGER,
                     FOREIGN KEY(user_id) REFERENCES users(user_id)
+                )`,
+                `CREATE TABLE IF NOT EXISTS post_likes (
+                    like_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    post_id INTEGER,
+                    user_id BLOB,
+                    committed_at INTEGER,
+                    FOREIGN KEY(post_id) REFERENCES posts(post_id),
+                    FOREIGN KEY(user_id) REFERENCES users(user_id)
+                )`,
+                `CREATE TABLE IF NOT EXISTS post_comments (
+                    comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    post_id INTEGER,
+                    user_id BLOB,
+                    text TEXT,
+                    committed_at INTEGER,
+                    FOREIGN KEY(post_id) REFERENCES posts(post_id),
+                    FOREIGN KEY(user_id) REFERENCES users(user_id)
                 )`
             ];
 
