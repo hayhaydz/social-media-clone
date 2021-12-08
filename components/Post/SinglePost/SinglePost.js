@@ -15,7 +15,7 @@ const SinglePost = ({ jwt, currentUser, query_id }) => {
         <div>
             {response.status !== 'fail' &&
                 <>
-                    <Post {...response.data} currentUsersID={currentUser.user_id}/>
+                    <Post {...response.data} currentUsersID={currentUser.user_id} isSingle={true} />
                 </>
             }
             {response.status === 'fail' &&

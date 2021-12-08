@@ -1,8 +1,9 @@
 import { Error } from '../../index';
-import { XCircleIcon } from '@heroicons/react/outline';
+import { XCircleIcon, PhotographIcon } from '@heroicons/react/outline';
 
-const ManagePost = ({postData, isEdit = false, setPostData, handleSubmit, setIsEditing }) => {
+const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, setIsEditing }) => {
     const handleOnChange = async (e) => {
+        console.log(e);
         setPostData({
             ...postData,
             text: e.target.value,
@@ -16,7 +17,7 @@ const ManagePost = ({postData, isEdit = false, setPostData, handleSubmit, setIsE
                 <span className={(postData.charCount > 480 ? 'text-red-500' : 'text-gray-300') + ' font-bold flex items-center'}>{postData.charCount}/480</span>
                 <label htmlFor={isEdit ? 'editModal' : 'createModal'} className="btn btn-ghost btn-square" id={isEdit ? 'editModalClose' : 'createModalClose'} onClick={() => {isEdit ? setIsEditing(false) : null}}><XCircleIcon className="w-6 h-6 mx-2 text-gray-300" /></label>
             </div>
-            <form action="#" id="form" className="form-control" name="form" onSubmit={handleSubmit}>
+            <form ref={form} action="#" id="form" className="form-control" name="form" encType="multipart/form-data" onSubmit={handleSubmit}>
                 <textarea 
                     name="text"
                     id="text"
@@ -25,6 +26,15 @@ const ManagePost = ({postData, isEdit = false, setPostData, handleSubmit, setIsE
                     className="textarea resize-none h-48 w-full mb-4" 
                     placeholder="What's on your mind?"
                     required
+                />
+                <label htmlFor="post_image" className="btn btn-ghost btn-square mb-4"><PhotographIcon className="w-8 h-8 text-gray-300" /></label>
+                <input
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    name="post_image"
+                    id="post_image"
+                    className="invisible h-0"
+                    onChange={handleOnChange}
                 />
                 <button type="submit" className="btn btn-primary">{isEdit ? 'update post' : 'post'}</button>
                 {postData.error && 
