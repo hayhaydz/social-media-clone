@@ -22,6 +22,12 @@ export const getPostById = async (req, res) => {
 
 export const newPost = async (req, res) => {
     const { text } = req.body;
+    let filename;
+    let imageID = null;
+    if(req.file) {
+        filename = req.file.filename;
+        imageID = filename.split('-')[0];
+    }
 
     if(text == null) {
         return res.status(400).send({ status: 'fail', message: 'Required post data was missing!' });
@@ -31,7 +37,11 @@ export const newPost = async (req, res) => {
         return res.status(400).send({ status: 'fail', message: 'Required post data was invalid. Too many characters!' });
     }
 
-    await open.insertPost(req.user_id, text, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
+    if(req.file) {
+        await open.insertImage(imageID, filename).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
+    }
+
+    await open.insertPost(req.user_id, text, imageID, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
 
     res.status(200).send({ status: 'success', message: 'Your post was created successfully' });
 };
