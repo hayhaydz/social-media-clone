@@ -31,7 +31,7 @@ const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
             }
             {response.data &&
                 response.data.map((post, index) => {
-                    return <Link href={`/post/${post.post_id}`}><a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full"><Post key={index} {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage}/></a></Link>
+                    return <Link href={`/post/${post.post_id}`} key={index}><a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full"><Post {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage} isSingle={false}/></a></Link>
                 })
             }
         </div>

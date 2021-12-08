@@ -25,8 +25,8 @@ export class open {
         return dao.get("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id WHERE post_id =? ORDER BY post_id DESC", [id]);
     }
 
-    static async insertPost(id, text, at) {
-        return dao.run("INSERT INTO posts (user_id, text, date_published) VALUES (?, ?, ?)", [id, text, at]);
+    static async insertPost(id, text, imageID, at) {
+        return dao.run("INSERT INTO posts (user_id, text, image_id, date_published) VALUES (?, ?, ?, ?)", [id, text, imageID, at]);
     }
 
     static async updatePost(id, text) {
@@ -35,6 +35,14 @@ export class open {
 
     static async deletePost(postID) {
         return dao.run("DELETE FROM posts WHERE post_id =?", [postID]);
+    }
+
+    static async insertImage(id, filename) {
+        return dao.run("INSERT INTO post_images (image_id, filename) VALUES (?, ?) ", [id, filename]);
+    }
+
+    static async removeImage(id) {
+        return dao.run("DELETE FROM post_images  image_id = ?", [id]);
     }
 
     static async insertPostLikes(userID, postID, at) {

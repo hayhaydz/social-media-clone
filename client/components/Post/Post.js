@@ -8,7 +8,7 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
 
     return (
-        <div className={'card bg-neutral p-6 overflow-visible' + (isSingle ? 'w-full !inline-block mb-0' : 'mb-16 max-w-xl m-auto transition-colors hover:bg-neutral-focus')}>
+        <div className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus')}>
             <div className="flex items-center">
                 <h3 className="!m-0 !mr-4">{first_name} {last_name}</h3>
                 <span className="text-gray-400">@{username}</span>

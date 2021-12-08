@@ -82,8 +82,15 @@ export default class {
                     post_id INTEGER PRIMARY KEY AUTOINCREMENT, 
                     user_id BLOB,
                     text TEXT,
+                    image_id BLOB,
                     date_published INTEGER,
                     FOREIGN KEY(user_id) REFERENCES users(user_id)
+                    FOREIGN KEY(image_id) REFERENCES post_images(image_id)
+                )`,
+                `CREATE TABLE IF NOT EXISTS post_images (
+                    image_id BLOB PRIMARY KEY UNIQUE,
+                    filename TEXT,
+                    CONSTRAINT image_unique UNIQUE (image_id)
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_likes (
                     like_id INTEGER PRIMARY KEY AUTOINCREMENT,
