@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DotsVerticalIcon } from "@heroicons/react/outline";
 import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, currentUsersID, jwt, setMessage, isSingle}) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, currentUsersID, jwt, setMessage, isSingle}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
@@ -16,7 +16,7 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
                 <span className="text-gray-400 mr-auto">{date}</span>
                 {user_id === currentUsersID &&
                     <div className="dropdown dropdown-end">
-                        <button tabIndex="0" className="btn btn-ghost btn-square"><DotsVerticalIcon className="w-6 h-6 mx-2" /></button>
+                        <button tabIndex="0" className="btn btn-ghost btn-square" onClick={(e) => e.stopPropagation()}><DotsVerticalIcon className="w-6 h-6 mx-2" /></button>
                         <ul tabIndex="0" className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-36 mt-8 overflow-visible">
                             <li className="before:hidden !pl-0">
                                 <label htmlFor="editModal" className="btn btn-ghost btn-sm normal-case modal-button" onClick={() => setIsEditing(!isEditing)}>Edit Post</label>
@@ -28,8 +28,13 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
                     </div>
                 }
             </div>
-
             <p className="break-words">{text}</p>
+            {filename &&
+                <div className={'bg-base-100 rounded-2xl ' + (!isSingle ? 'max-h-80 h-full flex items-center overflow-hidden' : '')}>
+                    <img src={`${process.env.PRIVATE_API_URL}/uploads/images/posts/${filename}`}/>
+                </div>
+            }
+
             {isEditing &&
                 <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} setMessage={setMessage} /></Modal>
             }

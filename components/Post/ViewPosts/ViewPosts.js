@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import useSWR from 'swr';
 import { getAuth } from '../../../utils/apiHandler';
 import { Error, Success } from '../../';
 import Post from '../Post';
 
 const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
+    const router = useRouter();
+
+    const handleClick = (e, path) => {
+        router.push(path);
+    }
 
     useEffect(() => {
         if(message !== '') {
@@ -25,13 +31,13 @@ const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
     return (
         <div className="posts flex flex-col items-center">
             {message !== '' &&
-                <div className="mb-8">
+                <div className="mb-8 max-w-xl w-full">
                     <Success text={message} />
                 </div>
             }
             {response.data &&
                 response.data.map((post, index) => {
-                    return <Link href={`/post/${post.post_id}`} key={index}><a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full"><Post {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage} isSingle={false}/></a></Link>
+                    return <a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full cursor-pointer" key={index} onClick={(e) => handleClick(e, `/post/${post.post_id}`)} ><Post {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage} isSingle={false}/></a>
                 })
             }
         </div>
