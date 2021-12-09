@@ -2,7 +2,7 @@ import { open } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 
 export const getPosts = async (req, res) => {
-    let posts = await open.getPosts();
+    let posts = await open.getPosts(req.user_id);
     Object.entries(posts);
     if(!posts) {
         return res.status(200).send({ status: 'fail' });
@@ -12,7 +12,7 @@ export const getPosts = async (req, res) => {
 };
 
 export const getPostById = async (req, res) => {
-    let post = await open.getPostById(req.params.id);
+    let post = await open.getPostById(req.user_id, req.params.id);
     if(!post) {
         return res.status(200).send({ status: 'fail' });
     }

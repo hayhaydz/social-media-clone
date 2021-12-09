@@ -1,11 +1,37 @@
 import { useState } from 'react';
-import { DotsVerticalIcon } from "@heroicons/react/outline";
+import { getAuth } from '../../utils/apiHandler';
+import { DotsVerticalIcon, HeartIcon, AnnotationIcon, ShareIcon } from '@heroicons/react/outline';
+import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid';
 import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, currentUsersID, jwt, setMessage, isSingle}) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, is_liked_by_user, currentUsersID, jwt, setMessage, isSingle}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isLiked, setIsLiked] = useState(is_liked_by_user);
+    const [totalLikes, setTotalLikes] = useState(total_likes);
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
+
+    const handleHeartClick = async (e) => {
+        e.stopPropagation();
+
+        const response = await getAuth(`${process.env.PRIVATE_API_URL}/api/post/${post_id}/like`, jwt);
+        response.json().then(async (result) => {
+            if(result.status === 'success') {
+                setIsLiked(!isLiked);
+                setTotalLikes(result.data.total_likes);
+            } else {
+                console.log('There was an error with creating your post. Error message:', result.message);
+            }
+        });
+    }
+
+    const handleCommentClick = (e) => {
+        e.stopPropagation();
+    }
+
+    const handleShareClick = (e) => {
+        e.stopPropagation();
+    }
 
     return (
         <div className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus')}>
@@ -30,10 +56,26 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
             </div>
             <p className="break-words">{text}</p>
             {filename &&
-                <div className={'bg-base-100 rounded-2xl ' + (!isSingle ? 'max-h-80 h-full flex items-center overflow-hidden' : '')}>
+                <div className={'bg-base-100 rounded-2xl mb-4 ' + (!isSingle ? 'max-h-80 h-full flex items-center overflow-hidden' : '')}>
                     <img src={`${process.env.PRIVATE_API_URL}/uploads/images/posts/${filename}`}/>
                 </div>
             }
+
+            <div className="flex items-center">
+                <div className="mr-4 items-center justify-center">
+                    <button className="btn btn-ghost btn-square" onClick={handleHeartClick}>
+                        {!isLiked ? 
+                            <HeartIcon className="w-6 h-6 mx-2" />
+                            : <HeartIconSolid className="w-6 h-6 mx-2 text-secondary" />
+                        }
+                    </button>
+                    {totalLikes > 0 &&
+                        <span className="font-bold">{totalLikes}</span>
+                    }
+                </div>
+                <button className="btn btn-ghost btn-square mr-4" onClick={handleCommentClick}><AnnotationIcon className="w-6 h-6 mx-2" /></button>
+                <button className="btn btn-ghost btn-square" onClick={handleShareClick}><ShareIcon className="w-6 h-6 mx-2" /></button>
+            </div>
 
             {isEditing &&
                 <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} setMessage={setMessage} /></Modal>

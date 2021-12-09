@@ -7,15 +7,20 @@ const SinglePost = ({ jwt, currentUser, query_id }) => {
     const fetcher = (url, token) => getAuth(url, token).then((r) => r.json());
     const url = `${process.env.PRIVATE_API_URL}/api/post/${query_id}`;
     const { data: response = {}, isLoading, isError } = useSWR([url, jwt], fetcher);
+    console.log(response);
 
     if(isLoading) return <div>Loading...</div>
     if(isError) return <div>Fetching posts has failed</div>;
 
     return (
         <div>
-            {response.status !== 'fail' &&
+            {response.data &&
                 <>
-                    <Post {...response.data} currentUsersID={currentUser.user_id} isSingle={true} />
+                    {response.status !== 'fail' &&
+                        <>
+                            <Post {...response.data} jwt={jwt} currentUsersID={currentUser.user_id} isSingle={true} />
+                        </>
+                    }
                 </>
             }
             {response.status === 'fail' &&
