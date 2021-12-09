@@ -19,6 +19,7 @@
 **.DS_Store
 **.pem
 **.sqlite
+**/public/
 
 # debug
 **npm-debug.log*
