@@ -4,6 +4,7 @@ import { ManagePost } from '../../';
 
 const EditPost = ({ jwt, post_id, text, setIsEditing, setMessage }) => {
     const [postData, setPostData] = useState({ text: text, charCount: text.length, error: '' });
+    // NEED TO ADDRESS AN ABILITY TO EDIT IMAGES ON POSTS. NEED TO FEED IMAGE DATA THROUGH TO INPUT...
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -2,8 +2,8 @@ import express from 'express';
 import dao from './repositories/dao';
 import { authenticated, authMiddleware } from './controllers/auth.controller';
 import { authRoutes, userRoutes, postRoutes, postLikesRoutes, postCommentsRoutes } from './routes';
-// import authRoutes from './routes/auth.routes';
 
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const rateLimit = require('express-rate-limit');
 const cors = require('cors');
@@ -11,7 +11,8 @@ export const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + '/public'));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 app.use(cors());
 app.use(authMiddleware);

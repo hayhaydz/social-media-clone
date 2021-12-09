@@ -1,14 +1,28 @@
 import { Error } from '../../index';
 import { XCircleIcon, PhotographIcon } from '@heroicons/react/outline';
+import { PhotographIcon as PhotographIconSolid } from '@heroicons/react/solid';
 
 const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, setIsEditing }) => {
-    const handleOnChange = async (e) => {
-        console.log(e);
+    const handleTextOnChange = async (e) => {
         setPostData({
             ...postData,
             text: e.target.value,
             charCount: e.target.value.length
         })
+    }
+
+    const handleImageOnChange = async (e) => {
+        let filename;
+        if(!e.target.files[0]) {
+            filename = '';
+        } else {
+            filename = e.target.files[0].name;
+        }
+
+        setPostData({
+            ...postData,
+            imageName: filename
+        });
     }
 
     return (
@@ -22,20 +36,32 @@ const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, 
                     name="text"
                     id="text"
                     value={postData.text}
-                    onChange={handleOnChange}
+                    onChange={handleTextOnChange}
                     className="textarea resize-none h-48 w-full mb-4" 
                     placeholder="What's on your mind?"
                     required
                 />
-                <label htmlFor="post_image" className="btn btn-ghost btn-square mb-4"><PhotographIcon className="w-8 h-8 text-gray-300" /></label>
-                <input
-                    type="file"
-                    accept=".jpg, .jpeg, .png"
-                    name="post_image"
-                    id="post_image"
-                    className="invisible h-0"
-                    onChange={handleOnChange}
-                />
+                <div className="flex items-center mb-4">
+                    <label htmlFor="post_image" className="btn btn-ghost btn-square">
+                        {!postData.imageName ? 
+                              <PhotographIcon className="w-8 h-8 text-gray-300" />
+                            : <PhotographIconSolid className="w-8 h-8 text-gray-400" />
+                        }
+                        
+                    </label>
+                    <input
+                        type="file"
+                        accept=".jpg, .jpeg, .png"
+                        name="post_image"
+                        id="post_image"
+                        className="invisible h-0 w-0"
+                        onChange={handleImageOnChange}
+                    />
+                    {postData.imageName &&
+                        <p className="!m-0 !ml-2 text-gray-400">{postData.imageName}</p>
+                    }
+                </div>
+
                 <button type="submit" className="btn btn-primary">{isEdit ? 'update post' : 'post'}</button>
                 {postData.error && 
                     <Error text={postData.error}/>

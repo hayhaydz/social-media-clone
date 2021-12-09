@@ -18,11 +18,11 @@ export class open {
     }
 
     static async getPosts() {
-        return dao.all("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id ORDER BY post_id DESC");
+        return dao.all("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username, post_images.filename FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id LEFT JOIN post_images ON post_images.image_id = posts.image_id ORDER BY post_id DESC");
     }
 
     static async getPostById(id) {
-        return dao.get("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id WHERE post_id =? ORDER BY post_id DESC", [id]);
+        return dao.get("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username, post_images.filename FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id LEFT JOIN post_images ON post_images.image_id = posts.image_id WHERE post_id =?", [id]);
     }
 
     static async insertPost(id, text, imageID, at) {
