@@ -17,12 +17,50 @@ export class open {
         return dao.get("SELECT first_name, last_name, description FROM user_profiles WHERE user_id =?", [id]);
     }
 
-    static async getPosts() {
-        return dao.all("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username, post_images.filename FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id LEFT JOIN post_images ON post_images.image_id = posts.image_id ORDER BY post_id DESC");
+    static async getPosts(userID) {
+        return dao.all(`
+            SELECT 
+                posts.post_id, 
+                posts.user_id, 
+                posts.text, 
+                posts.date_published, 
+                user_profiles.first_name, 
+                user_profiles.last_name, 
+                users.username, 
+                post_images.filename, 
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id) AS total_likes,
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user
+            FROM posts 
+            JOIN user_profiles ON user_profiles.user_id = posts.user_id 
+            JOIN users ON users.user_id = posts.user_id LEFT 
+            JOIN post_images ON post_images.image_id = posts.image_id 
+            ORDER BY posts.post_id DESC
+        `, [userID]);
     }
 
-    static async getPostById(id) {
-        return dao.get("SELECT post_id, posts.user_id, text, date_published, first_name, last_name, username, post_images.filename FROM posts JOIN user_profiles ON user_profiles.user_id = posts.user_id JOIN users ON users.user_id = posts.user_id LEFT JOIN post_images ON post_images.image_id = posts.image_id WHERE post_id =?", [id]);
+    static async getPostById(userID, postID) {
+        return dao.get(`
+            SELECT 
+                posts.post_id, 
+                posts.user_id, 
+                posts.text, 
+                posts.date_published, 
+                user_profiles.first_name, 
+                user_profiles.last_name, 
+                users.username, 
+                post_images.filename, 
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id) AS total_likes,
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user
+            FROM posts 
+            JOIN user_profiles ON user_profiles.user_id = posts.user_id 
+            JOIN users ON users.user_id = posts.user_id LEFT 
+            JOIN post_images ON post_images.image_id = posts.image_id 
+            WHERE post_id = ?`
+        , [userID, postID]);
+    }
+
+    static async checkPostById(id) {
+        return dao.get(`SELECT post_id FROM posts WHERE post_id = ?`, [id]);
     }
 
     static async insertPost(id, text, imageID, at) {
@@ -43,6 +81,10 @@ export class open {
 
     static async removeImage(id) {
         return dao.run("DELETE FROM post_images  image_id = ?", [id]);
+    }
+
+    static async getTotalPostLikes(id) {
+        return dao.get('SELECT (SELECT COUNT(*) FROM post_likes WHERE post_id = ?) AS total_likes', [id]);
     }
 
     static async insertPostLikes(userID, postID, at) {
