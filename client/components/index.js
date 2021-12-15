@@ -10,3 +10,4 @@ export { default as EditPost } from './Post/ManagePost/EditPost';
 export { default as DeletePost } from './Post/ManagePost/DeletePost'
 export { default as SinglePost } from './Post/SinglePost/SinglePost';
 export { default as ViewPosts } from './Post/ViewPosts/ViewPosts';
+export { default as Profile } from './Profile/Profile';

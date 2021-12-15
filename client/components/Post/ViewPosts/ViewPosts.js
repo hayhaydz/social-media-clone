@@ -5,7 +5,7 @@ import { getAuth } from '../../../utils/apiHandler';
 import { Error, Success } from '../../';
 import Post from '../Post';
 
-const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
+const ViewPost = ({ jwt, currentUsersID, message, setMessage, url}) => {
     const router = useRouter();
 
     const handleClick = (e, path) => {
@@ -21,7 +21,6 @@ const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
     }, [message]);
 
     const fetcher = (url, token) => getAuth(url, token).then((r) => r.json());
-    const url = `${process.env.PRIVATE_API_URL}/api/post`;
     const { data: response = {}, isLoading, isError } = useSWR([url, jwt], fetcher, {refreshInterval: 1000});
 
     if(isLoading) return <div>Loading...</div>
@@ -36,7 +35,7 @@ const ViewPost = ({ jwt, currentUsersID, message, setMessage }) => {
             }
             {response.data &&
                 response.data.map((post, index) => {
-                    return <a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full cursor-pointer" key={index} onClick={(e) => handleClick(e, `/post/${post.post_id}`)} ><Post {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage} isSingle={false}/></a>
+                    return <a className="!no-underline !font-normal inline-block mb-16 max-w-xl w-full cursor-pointer" key={index} onClick={(e) => handleClick(e, `/p/${post.post_id}`)} ><Post {...post} currentUsersID={currentUsersID} jwt={jwt} setMessage={setMessage} isSingle={false}/></a>
                 })
             }
         </div>
