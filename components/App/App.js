@@ -6,7 +6,7 @@ const App = ({ jwt, currentUser, message, setMessage }) => {
         <section className="app">
             <span className="block mb-4">Welcome</span>
             <h1>{`${currentUser.first_name} ${currentUser.last_name}`}</h1>
-            <ViewPosts jwt={jwt} currentUsersID={currentUser.user_id} message={message} setMessage={setMessage} />
+            <ViewPosts jwt={jwt} currentUsersID={currentUser.user_id} message={message} setMessage={setMessage} url={`${process.env.PRIVATE_API_URL}/api/post`}/>
         </section>
     )
 }

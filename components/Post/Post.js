@@ -33,11 +33,15 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
         e.stopPropagation();
     }
 
+    const handleUsernameClick = (e) => {
+        e.stopPropagation();
+    }
+
     return (
         <div className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus')}>
             <div className="flex items-center">
                 <h3 className="!m-0 !mr-4">{first_name} {last_name}</h3>
-                <span className="text-gray-400">@{username}</span>
+                <a href={`/u/${username}`} onClick={handleUsernameClick} className="!no-underline !text-gray-400 hover:!underline"><span>@{username}</span></a>
                 <span className="mx-4 text-gray-400 font-bold"> · </span>
                 <span className="text-gray-400 mr-auto">{date}</span>
                 {user_id === currentUsersID &&
