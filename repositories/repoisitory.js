@@ -2,19 +2,47 @@ import dao from './dao';
 
 export class open {
     static async getUserByUsername(username) {
-        return dao.get("SELECT user_id, username, email FROM users WHERE username =?", [username]);
-    }
-
-    static async getUserByEmail(email) {
-        return dao.get("SELECT user_id, username, email FROM users WHERE email =?", [email]);
+        return dao.get(`
+            SELECT 
+                users.user_id, 
+                users.username, 
+                users.email,
+                user_profiles.first_name,
+                user_profiles.last_name,
+                user_profiles.description 
+            FROM users
+            JOIN user_profiles ON user_profiles.user_id = users.user_id 
+            WHERE users.username = ?
+        `, [username]);
     }
 
     static async getUserById(id) {
-        return dao.get("SELECT user_id, username, email FROM users WHERE user_id =?", [id]);
+        return dao.get(`
+            SELECT 
+                users.user_id, 
+                users.username, 
+                users.email,
+                user_profiles.first_name,
+                user_profiles.last_name,
+                user_profiles.description 
+            FROM users
+            JOIN user_profiles ON user_profiles.user_id = users.user_id 
+            WHERE users.user_id = ?
+        `, [id]);
     }
 
-    static async getUserProfileById(id) {
-        return dao.get("SELECT first_name, last_name, description FROM user_profiles WHERE user_id =?", [id]);
+    static async searchUsers(username) {
+        return dao.all(`
+            SELECT
+                users.user_id,
+                users.username,
+                user_profiles.first_name,
+                user_profiles.last_name
+            FROM 
+            users 
+            JOIN user_profiles ON user_profiles.user_id = users.user_id 
+            WHERE users.username LIKE ?
+        `, [username]);
     }
 
     static async getPosts(userID) {
@@ -36,6 +64,28 @@ export class open {
             JOIN post_images ON post_images.image_id = posts.image_id 
             ORDER BY posts.post_id DESC
         `, [userID]);
+    }
+
+    static async getPostsByUsername(userID, username) {
+        return dao.all(`
+            SELECT 
+                posts.post_id, 
+                posts.user_id, 
+                posts.text, 
+                posts.date_published, 
+                user_profiles.first_name, 
+                user_profiles.last_name, 
+                users.username, 
+                post_images.filename, 
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id) AS total_likes,
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user
+            FROM posts 
+            JOIN user_profiles ON user_profiles.user_id = posts.user_id 
+            JOIN users ON users.user_id = posts.user_id LEFT 
+            JOIN post_images ON post_images.image_id = posts.image_id 
+            WHERE users.username = ?
+            ORDER BY posts.post_id DESC`
+        , [userID, username]);
     }
 
     static async getPostById(userID, postID) {

@@ -1,4 +1,4 @@
-import { getPosts, getPostById, newPost, updatePost, removePost } from '../controllers/post.controller';
+import { getPosts, getPostsByUsername, getPostById, newPost, updatePost, removePost } from '../controllers/post.controller';
 import crypto from 'crypto';
 import * as express from 'express';
 const router = express.Router();
@@ -18,6 +18,7 @@ const upload = multer({
 });
 
 router.get('/', getPosts);
+router.get('/u/:username', getPostsByUsername);
 router.post('/new', upload.single('post_image'), newPost);
 router.patch('/:id', upload.single('post_image'), updatePost);
 router.get('/:id', getPostById);
