@@ -5,7 +5,7 @@ import { DotsVerticalIcon, HeartIcon, AnnotationIcon, ShareIcon } from '@heroico
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid';
 import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, is_liked_by_user, currentUsersID, jwt, setMessage, isSingle}) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, is_liked_by_user, currentUsersID, jwt, isSingle}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLiked, setIsLiked] = useState(is_liked_by_user);
@@ -13,6 +13,20 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
 
     const router = useRouter();
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
+
+    const handlePostClick = () => {
+        router.push(`/p/${post_id}`);
+    }
+
+    const handleEditClick = (e) => {
+        e.stopPropagation();
+        setIsEditing(!isEditing);
+    }
+
+    const handleDelClick = (e) => {
+        e.stopPropagation();
+        setIsDeleting(!isDeleting);
+    }
 
     const handleHeartClick = async (e) => {
         e.stopPropagation();
@@ -45,10 +59,10 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
     }
 
     return (
-        <div className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus')}>
+        <article className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus mb-16 max-w-xl w-full cursor-pointer')} onClick={handlePostClick}>
             <div className="flex items-center">
                 <h3 className="!m-0 !mr-4">{first_name} {last_name}</h3>
-                <span onClick={handleUsernameClick} className="!no-underline !text-gray-400 hover:!underline">@{username}</span>
+                <span onClick={handleUsernameClick} className="!no-underline !text-gray-400 cursor-pointer hover:!underline">@{username}</span>
                 <span className="mx-4 text-gray-400 font-bold"> · </span>
                 <span className="text-gray-400 mr-auto">{date}</span>
                 {user_id === currentUsersID &&
@@ -56,10 +70,10 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
                         <button tabIndex="0" className="btn btn-ghost btn-square" onClick={(e) => e.stopPropagation()}><DotsVerticalIcon className="w-6 h-6 mx-2" /></button>
                         <ul tabIndex="0" className="p-2 shadow menu dropdown-content bg-base-100 rounded-box w-36 mt-8 overflow-visible">
                             <li className="before:hidden !pl-0">
-                                <label htmlFor="editModal" className="btn btn-ghost btn-sm normal-case modal-button" onClick={() => setIsEditing(!isEditing)}>Edit Post</label>
+                                <a className="btn btn-ghost btn-sm flex items-center normal-case modal-button !no-underline !p-0" onClick={handleEditClick}>Edit Post</a>
                             </li>
                             <li className="before:hidden !pl-0">
-                                <label htmlFor="deleteModal" className="btn btn-ghost btn-sm normal-case text-red-600 modal-button" onClick={() => setIsDeleting(!isDeleting)}>Delete Post</label>
+                                <a className="btn btn-ghost btn-sm normal-case !text-red-600 modal-button !no-underline !p-0" onClick={handleDelClick}>Delete Post</a>
                             </li>
                         </ul>
                     </div>
@@ -89,12 +103,12 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
             </div>
 
             {isEditing &&
-                <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} setMessage={setMessage} /></Modal>
+                <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} /></Modal>
             }
             {isDeleting &&
-                <Modal id="deleteModal" ><DeletePost jwt={jwt} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} setMessage={setMessage} /></Modal>
+                <Modal id="deleteModal" ><DeletePost jwt={jwt} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} /></Modal>
             }
-        </div>
+        </article>
     )
 }
 export default Post;

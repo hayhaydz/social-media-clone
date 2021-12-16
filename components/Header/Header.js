@@ -5,7 +5,8 @@ import { logout } from '../../utils/auth';
 import { LogoutIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import { Modal, CreatePost } from '../';
 
-const Header = ({ jwt, setMessage }) => {
+const Header = ({ jwt }) => {
+    const [isCreating, setIsCreating] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleSearchSubmit = (e) => {
@@ -19,7 +20,7 @@ const Header = ({ jwt, setMessage }) => {
 
     return (
         <header className="navbar mb-8 shadow-lg bg-neutral text-neutral-content rounded-box">
-            <div className="flex-1 px-2 mx-2">
+            <div className="flex-1 px-0 mx-0">
                 <Link href="/home"><button className="btn btn-ghost"><span className="text-lg font-bold lowercase">neem</span></button></Link>
             </div>
             {jwt && 
@@ -37,9 +38,11 @@ const Header = ({ jwt, setMessage }) => {
                             <button type="submit" className="btn btn-primary btn-outline">go</button>
                         </div>
                     </form>
-                    <label htmlFor="createModal" className="btn btn-ghost btn-square modal-button mr-2"><PlusCircleIcon className="w-6 h-6 mx-2" /></label>
+                    <button className="btn btn-ghost btn-square modal-button mr-2" onClick={() => setIsCreating(!isCreating)}><PlusCircleIcon className="w-6 h-6 mx-2" /></button>
                     <button className="btn btn-ghost btn-square" onClick={logout}><LogoutIcon className="w-6 h-6 mx-2" /></button>
-                    <Modal id="createModal"><CreatePost jwt={jwt} setMessage={setMessage} /></Modal>
+                    {isCreating &&
+                        <Modal id="createModal"><CreatePost jwt={jwt} setIsCreating={setIsCreating} /></Modal>
+                    }
                 </div>
             }
         </header>

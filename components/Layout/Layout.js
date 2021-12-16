@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Header from '../Header/Header';
 
-const Layout = ({ children, auth, setMessage }) => {
+const Layout = ({ children, auth }) => {
     return (
         <main className="prose m-auto mt-8 max-w-screen-xl">
             <Head>
@@ -9,7 +9,7 @@ const Layout = ({ children, auth, setMessage }) => {
                 <meta name="description" content="A super cool NextJS app" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header jwt={auth} setMessage={setMessage} />
+            <Header jwt={auth} />
             
             {children}
         </main>

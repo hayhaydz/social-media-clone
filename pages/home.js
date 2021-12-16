@@ -5,8 +5,6 @@ import webRoutes from '../utils/webRoutes';
 import { Layout, App } from '../components';
 
 const Home = ({ auth, currentUser }) => {
-    const [message, setMessage] = useState('');
-
     const router = useRouter();
     if(!auth) {
         if (typeof window !== 'undefined') {
@@ -14,8 +12,8 @@ const Home = ({ auth, currentUser }) => {
         }
     } else {
         return (
-            <Layout auth={auth.token} setMessage={setMessage} >
-                <App jwt={auth.token} currentUser={currentUser} message={message} setMessage={setMessage} />
+            <Layout auth={auth.token} >
+                <App jwt={auth.token} currentUser={currentUser} />
             </Layout>
         )
     }
