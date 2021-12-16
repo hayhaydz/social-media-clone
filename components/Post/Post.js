@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { getAuth } from '../../utils/apiHandler';
 import { DotsVerticalIcon, HeartIcon, AnnotationIcon, ShareIcon } from '@heroicons/react/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid';
@@ -9,6 +10,8 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLiked, setIsLiked] = useState(is_liked_by_user);
     const [totalLikes, setTotalLikes] = useState(total_likes);
+
+    const router = useRouter();
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
 
     const handleHeartClick = async (e) => {
@@ -35,13 +38,17 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
 
     const handleUsernameClick = (e) => {
         e.stopPropagation();
+
+        if(router.asPath != `/u/${username}`) {
+            router.push(`/u/${username}`);
+        }
     }
 
     return (
         <div className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus')}>
             <div className="flex items-center">
                 <h3 className="!m-0 !mr-4">{first_name} {last_name}</h3>
-                <a href={`/u/${username}`} onClick={handleUsernameClick} className="!no-underline !text-gray-400 hover:!underline"><span>@{username}</span></a>
+                <span onClick={handleUsernameClick} className="!no-underline !text-gray-400 hover:!underline">@{username}</span>
                 <span className="mx-4 text-gray-400 font-bold"> · </span>
                 <span className="text-gray-400 mr-auto">{date}</span>
                 {user_id === currentUsersID &&
