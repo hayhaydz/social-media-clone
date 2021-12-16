@@ -31,7 +31,7 @@ export class open {
         `, [id]);
     }
 
-    static async searchUsers(username) {
+    static async searchUsers(q) {
         return dao.all(`
             SELECT
                 users.user_id,
@@ -41,8 +41,12 @@ export class open {
             FROM 
             users 
             JOIN user_profiles ON user_profiles.user_id = users.user_id 
-            WHERE users.username LIKE ?
-        `, [username]);
+            WHERE (
+                users.username LIKE ? OR
+                user_profiles.first_name LIKE ? OR
+                user_profiles.last_name LIKE ?
+            )
+        `, [q]);
     }
 
     static async getPosts(userID) {
