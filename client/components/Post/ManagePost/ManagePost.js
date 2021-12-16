@@ -2,7 +2,7 @@ import { Error } from '../../index';
 import { XCircleIcon, PhotographIcon } from '@heroicons/react/outline';
 import { PhotographIcon as PhotographIconSolid } from '@heroicons/react/solid';
 
-const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, setIsEditing }) => {
+const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, setIsEditing, setIsCreating }) => {
     const handleTextOnChange = async (e) => {
         setPostData({
             ...postData,
@@ -29,7 +29,7 @@ const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, 
         <div className="p-4 card bg-base-200 w-1/4">
             <div className="flex w-full mb-4 justify-between items-center">
                 <span className={(postData.charCount > 480 ? 'text-red-500' : 'text-gray-300') + ' font-bold flex items-center'}>{postData.charCount}/480</span>
-                <label htmlFor={isEdit ? 'editModal' : 'createModal'} className="btn btn-ghost btn-square" id={isEdit ? 'editModalClose' : 'createModalClose'} onClick={() => {isEdit ? setIsEditing(false) : null}}><XCircleIcon className="w-6 h-6 mx-2 text-gray-300" /></label>
+                <button className="btn btn-ghost btn-square" id={isEdit ? 'editModalClose' : 'createModalClose'} onClick={() => {isEdit ? setIsEditing(false) : setIsCreating(false);}}><XCircleIcon className="w-6 h-6 mx-2 text-gray-300" /></button>
             </div>
             <form ref={form} action="#" id="form" className="form-control" name="form" encType="multipart/form-data" onSubmit={handleSubmit}>
                 <textarea 
