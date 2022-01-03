@@ -1,6 +1,16 @@
 import { open } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 
+export const getComments = async (req, res) => {
+    let post = await open.checkPostById(req.params.id);
+    if(!post) {
+        return res.status(400).send({ status: 'fail', message: 'Could not find the post you are trying to get comments for' });
+    }
+
+    let comments = await open.getPostComments(req.params.id);
+    return res.status(200).send({ status: 'success', data: comments });
+}
+
 export const newComment = async (req, res) => {
     const { comment } = req.body;
 
@@ -12,7 +22,7 @@ export const newComment = async (req, res) => {
         return res.status(400).send({ status: 'fail', message: 'Required post data was invalid. Too many characters!' });
     }
 
-    let post = await open.getPostById(req.params.id);
+    let post = await open.checkPostById(req.params.id);
     if(!post) {
         return res.status(400).send({ status: 'fail', message: 'Could not find the post you are trying to comment on' });
     }
@@ -23,7 +33,7 @@ export const newComment = async (req, res) => {
 }
 
 export const removeComment = async (req, res) => {
-    let post = await open.getPostById(req.params.id);
+    let post = await open.checkPostById(req.params.id);
     if(!post) {
         return res.status(400).send({ status: 'fail', message: 'Could not find the post you are trying to remove the comment on' });
     }
