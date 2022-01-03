@@ -88,8 +88,8 @@ export class open {
             JOIN users ON users.user_id = posts.user_id LEFT 
             JOIN post_images ON post_images.image_id = posts.image_id 
             WHERE users.username = ?
-            ORDER BY posts.post_id DESC`
-        , [userID, username]);
+            ORDER BY posts.post_id DESC
+        `, [userID, username]);
     }
 
     static async getPostById(userID, postID) {
@@ -109,12 +109,12 @@ export class open {
             JOIN user_profiles ON user_profiles.user_id = posts.user_id 
             JOIN users ON users.user_id = posts.user_id LEFT 
             JOIN post_images ON post_images.image_id = posts.image_id 
-            WHERE post_id = ?`
-        , [userID, postID]);
+            WHERE post_id = ?
+        `, [userID, postID]);
     }
 
     static async checkPostById(id) {
-        return dao.get(`SELECT post_id FROM posts WHERE post_id = ?`, [id]);
+        return dao.get(`SELECT * FROM posts WHERE post_id = ?`, [id]);
     }
 
     static async insertPost(id, text, imageID, at) {
@@ -153,6 +153,23 @@ export class open {
         return dao.get("SELECT like_id FROM post_likes WHERE user_id = ? AND post_id = ?", [userID, postID]);
     }
 
+    static async getPostComments(postID) {
+        return dao.all(`
+            SELECT 
+                post_id, 
+                post_comments.user_id, 
+                text, 
+                committed_at,
+                user_profiles.first_name, 
+                user_profiles.last_name, 
+                users.username
+            FROM post_comments 
+            JOIN user_profiles ON user_profiles.user_id = post_comments.user_id
+            JOIN users ON users.user_id = post_comments.user_id
+            WHERE post_id = ?
+        `, [postID]);
+    }
+
     static async insertPostComments(userID, postID, text, at) {
         return dao.run("INSERT INTO post_comments (user_id, post_id, text, committed_at) VALUES (?, ?, ?, ?)", [userID, postID, text, at]);
     }
@@ -162,7 +179,7 @@ export class open {
     }
 
     static async checkPostComments(id) {
-        return dao.get("SELECT post_id from post_comments WHERE comment_id = ?", [id]);
+        return dao.get("SELECT post_id FROM post_comments WHERE comment_id = ?", [id]);
     }
 }
 

@@ -20,9 +20,9 @@ const upload = multer({
 router.get('/', getPosts);
 router.get('/u/:username', getPostsByUsername);
 router.post('/new', upload.single('post_image'), newPost);
-router.patch('/:id', upload.single('post_image'), updatePost);
-router.get('/:id', getPostById);
-router.delete('/:id', removePost);
+router.get('/id/:id', getPostById);
+router.patch('/id/:id', upload.single('post_image'), updatePost);
+router.delete('/id/:id', removePost);
 
 
 module.exports = router;
