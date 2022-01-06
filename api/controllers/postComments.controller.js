@@ -8,6 +8,7 @@ export const getComments = async (req, res) => {
     }
 
     let comments = await open.getPostComments(req.params.id);
+    comments.reverse();
     return res.status(200).send({ status: 'success', data: comments });
 }
 
@@ -18,7 +19,7 @@ export const newComment = async (req, res) => {
         return res.status(400).send({ status: 'fail', message: 'Required comment data was missing!' });
     }
 
-    if(comment.length > 640) {
+    if(comment.length > 320) {
         return res.status(400).send({ status: 'fail', message: 'Required post data was invalid. Too many characters!' });
     }
 

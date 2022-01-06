@@ -4,7 +4,7 @@ import { deleteAuth } from '../../../utils/apiHandler';
 import { Error } from '../../';
 
 
-const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
+const DeleteComment = ({ jwt, comment_id, post_id, isDeleting, setIsDeleting }) => {
     const [deleteData, setDeleteData] = useState({error: '' });
 
     const handleConfirmClick = async () => {
@@ -13,16 +13,16 @@ const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
             error: ''
         });
 
-        const response = await deleteAuth(`${process.env.PRIVATE_API_URL}/api/post/id/${post_id}`, jwt);
+        const response = await deleteAuth(`${process.env.PRIVATE_API_URL}/api/post/${post_id}/comment/${comment_id}`, jwt);
         response.json().then(async (data) => {
             if(data.status === 'success') {
                 setIsDeleting(!isDeleting);
                 Router.push({
-                    pathname: '/home',
+                    pathname: `/p/${post_id}`,
                     query: { msg: data.message }
                 });
             } else {
-                console.log('There was an error with deleting your post. Error message:', data.message);
+                console.log('There was an error with deleting your comment. Error message:', data.message);
                 setDeleteData({
                     ...deleteData,
                     error: data.message
@@ -33,7 +33,7 @@ const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
 
     return (
         <div className="p-4 card bg-base-200 w-1/4">
-            <h1 className="!mb-16">Are you sure you want to delete this post?</h1>
+            <h1 className="!mb-16">Are you sure you want to delete this comment?</h1>
             <div className="inline-flex gap-x-4">
                 <button className="btn btn-primary flex-grow" onClick={handleConfirmClick}>Confirm</button>
                 <button className="btn flex-grow" id="deleteModalClose" onClick={() => setIsDeleting(!isDeleting)}>Cancel</button>
@@ -44,4 +44,4 @@ const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
         </div>
     )
 }
-export default DeletePost;
+export default DeleteComment;

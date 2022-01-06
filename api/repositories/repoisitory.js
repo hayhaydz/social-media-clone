@@ -156,6 +156,7 @@ export class open {
     static async getPostComments(postID) {
         return dao.all(`
             SELECT 
+                comment_id,
                 post_id, 
                 post_comments.user_id, 
                 text, 

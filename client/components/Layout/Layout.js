@@ -1,7 +1,21 @@
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Header from '../Header/Header';
+import { Error, Success } from '../';
 
 const Layout = ({ children, auth }) => {
+    const router = useRouter();
+
+    useEffect(() => {
+        if(router.query.msg) {
+            setTimeout(() => {
+                let path = router.asPath.split('?')[0];
+                router.push(path);
+            }, 3000);
+        }
+    });
+
     return (
         <main className="prose m-auto mt-8 max-w-screen-xl">
             <Head>
@@ -10,6 +24,11 @@ const Layout = ({ children, auth }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header jwt={auth} />
+            {router.query.msg &&
+                <div className="m-auto mb-8 max-w-xl w-full">
+                    <Success text={router.query.msg} />
+                </div>
+            }
             
             {children}
         </main>

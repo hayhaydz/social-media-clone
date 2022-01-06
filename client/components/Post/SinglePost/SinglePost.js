@@ -12,7 +12,7 @@ const SinglePost = ({ jwt, currentUser, query_id }) => {
     if(isError) return <div>Fetching posts has failed</div>;
 
     return (
-        <div>
+        <>
             {response.data &&
                 <>
                     {response.status !== 'fail' &&
@@ -28,7 +28,7 @@ const SinglePost = ({ jwt, currentUser, query_id }) => {
                     <Link href="/home"><a className="link">Return home</a></Link>
                 </>
             }
-        </div>
+        </>
     )
 }
 export default SinglePost;
