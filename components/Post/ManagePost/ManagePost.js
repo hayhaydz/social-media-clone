@@ -1,4 +1,4 @@
-import { Error } from '../../index';
+import { Error } from '../../';
 import { XCircleIcon, PhotographIcon } from '@heroicons/react/outline';
 import { PhotographIcon as PhotographIconSolid } from '@heroicons/react/solid';
 

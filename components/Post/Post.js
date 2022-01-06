@@ -15,7 +15,9 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
 
     const handlePostClick = () => {
-        router.push(`/p/${post_id}`);
+        if(!isSingle) {
+            router.push(`/p/${post_id}`);
+        }
     }
 
     const handleEditClick = (e) => {
@@ -59,7 +61,7 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
     }
 
     return (
-        <article className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full mb-0 m-auto' : '!inline-block  transition-colors hover:bg-neutral-focus mb-16 max-w-xl w-full cursor-pointer')} onClick={handlePostClick}>
+        <article className={'card bg-neutral p-6 overflow-visible w-full max-w-xl ' + (isSingle ? 'w-full m-auto mb-8' : '!inline-block  transition-colors hover:bg-neutral-focus mb-16 max-w-xl w-full cursor-pointer')} onClick={handlePostClick}>
             <div className="flex items-center">
                 <h3 className="!m-0 !mr-4">{first_name} {last_name}</h3>
                 <span onClick={handleUsernameClick} className="!no-underline !text-gray-400 cursor-pointer hover:!underline">@{username}</span>
