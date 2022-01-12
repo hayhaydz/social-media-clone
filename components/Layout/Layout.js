@@ -11,7 +11,7 @@ const Layout = ({ children, auth }) => {
         if(router.query.msg) {
             setTimeout(() => {
                 let path = router.asPath.split('?')[0];
-                router.push(path);
+                router.push(path, undefined, { scroll: false });
             }, 3000);
         }
     });
@@ -24,13 +24,13 @@ const Layout = ({ children, auth }) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             <Header jwt={auth} />
+            
+            {children}
             {router.query.msg &&
                 <div className="m-auto mb-8 max-w-xl w-full">
                     <Success text={router.query.msg} />
                 </div>
             }
-            
-            {children}
         </main>
     )
 }
