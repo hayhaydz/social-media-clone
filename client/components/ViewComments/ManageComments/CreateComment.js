@@ -33,7 +33,7 @@ const CreateComment = ({ jwt, currentUsersID, post_id }) => {
                 Router.push({
                     pathname: `/p/${post_id}`,
                     query: { msg: data.message }
-                });
+                }, undefined, { scroll: false });
             } else {
                 console.log('There was an error with creating your comment. Error message:', data.message);
                 setCommentData({

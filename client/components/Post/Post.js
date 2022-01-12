@@ -5,11 +5,12 @@ import { DotsVerticalIcon, HeartIcon, AnnotationIcon, ShareIcon } from '@heroico
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid';
 import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, is_liked_by_user, currentUsersID, jwt, isSingle}) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, total_comments, is_liked_by_user, currentUsersID, jwt, isSingle}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLiked, setIsLiked] = useState(is_liked_by_user);
     const [totalLikes, setTotalLikes] = useState(total_likes);
+    const [totalComments, setTotalComments] = useState(total_comments);
 
     const router = useRouter();
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
@@ -89,8 +90,8 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
             }
 
             <div className="flex items-center">
-                <div className="mr-4 items-center justify-center">
-                    <button className="btn btn-ghost btn-square" onClick={handleHeartClick}>
+                <div className="mr-4 flex items-center justify-center">
+                    <button className="btn btn-ghost btn-square mr-2" onClick={handleHeartClick}>
                         {!isLiked ? 
                             <HeartIcon className="w-6 h-6 mx-2" />
                             : <HeartIconSolid className="w-6 h-6 mx-2 text-secondary" />
@@ -100,7 +101,12 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
                         <span className="font-bold">{totalLikes}</span>
                     }
                 </div>
-                <button className="btn btn-ghost btn-square mr-4" onClick={handleCommentClick}><AnnotationIcon className="w-6 h-6 mx-2" /></button>
+                <div className="mr-4 flex items-center justify-center">
+                    <button className="btn btn-ghost btn-square mr-2" onClick={handleCommentClick}><AnnotationIcon className="w-6 h-6 mx-2" /></button>
+                    {totalComments > 0 &&
+                        <span className="font-bold">{totalComments}</span>
+                    }
+                </div>
                 <button className="btn btn-ghost btn-square" onClick={handleShareClick}><ShareIcon className="w-6 h-6 mx-2" /></button>
             </div>
 
