@@ -61,7 +61,8 @@ export class open {
                 users.username, 
                 post_images.filename, 
                 (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id) AS total_likes,
-                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user,
+                (SELECT COUNT(*) FROM post_comments WHERE post_comments.post_id = posts.post_id) AS total_comments
             FROM posts 
             JOIN user_profiles ON user_profiles.user_id = posts.user_id 
             JOIN users ON users.user_id = posts.user_id LEFT 
@@ -82,7 +83,8 @@ export class open {
                 users.username, 
                 post_images.filename, 
                 (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id) AS total_likes,
-                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user,
+                (SELECT COUNT(*) FROM post_comments WHERE post_comments.post_id = posts.post_id) AS total_comments
             FROM posts 
             JOIN user_profiles ON user_profiles.user_id = posts.user_id 
             JOIN users ON users.user_id = posts.user_id LEFT 
@@ -104,7 +106,8 @@ export class open {
                 users.username, 
                 post_images.filename, 
                 (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id) AS total_likes,
-                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user
+                (SELECT COUNT(*) FROM post_likes WHERE post_likes.post_id = posts.post_id AND post_likes.user_id = ?) AS is_liked_by_user,
+                (SELECT COUNT(*) FROM post_comments WHERE post_comments.post_id = posts.post_id) AS total_comments
             FROM posts 
             JOIN user_profiles ON user_profiles.user_id = posts.user_id 
             JOIN users ON users.user_id = posts.user_id LEFT 
