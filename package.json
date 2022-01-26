@@ -6,8 +6,7 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "start": "node ./index.bundle.js",
-    "build": "node index.js",
+    "start": "node ./index.js",
     "dev": "nodemon ./index.js"
   },
   "dependencies": {
