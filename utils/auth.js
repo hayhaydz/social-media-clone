@@ -46,7 +46,6 @@ const withAuthSync = (WrappedComponent) => {
         }
         const user = await getUser();
         const PRIVATE_URL = process.env.PRIVATE_API_URL;
-        console.log(PRIVATE_URL);
 
         const componentProps =
             WrappedComponent.getInitialProps &&
