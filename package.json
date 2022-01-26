@@ -10,6 +10,7 @@
     "build": "webpack",
     "dev": "nodemon ./index.js"
   },
+  "heroku-run-build-script": true,
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
