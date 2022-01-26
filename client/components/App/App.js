@@ -1,6 +1,7 @@
 import { ViewPosts } from '../';
 
 const App = ({ jwt, currentUser }) => {
+    console.log('private api url: ', process.env.PRIVATE_API_URL);
 
     return (
         <section className="app">
