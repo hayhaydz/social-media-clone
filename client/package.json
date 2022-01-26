@@ -23,6 +23,7 @@
     "tailwindcss": "^2.2.19"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^4.2.1",
     "cross-env": "^7.0.3",
     "eslint": "8.0.0",
     "eslint-config-next": "11.1.2",
