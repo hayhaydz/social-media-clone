@@ -45,12 +45,14 @@ const withAuthSync = (WrappedComponent) => {
             inMemory = token;
         }
         const user = await getUser();
+        const PRIVATE_URL = process.env.PRIVATE_API_URL;
+        console.log(PRIVATE_URL);
 
         const componentProps =
             WrappedComponent.getInitialProps &&
             (await WrappedComponent.getInitialProps(ctx));
 
-        return { ...componentProps, auth: inMemory, currentUser: user };
+        return { ...componentProps, auth: inMemory, currentUser: user, PRIVATE_URL: PRIVATE_URL };
     }
 
     constructor(props) {
