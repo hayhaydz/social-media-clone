@@ -2,10 +2,7 @@ import { open } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 
 export const getPosts = async (req, res) => {
-    if(!req.query.page || !req.query.limit) {
-        return res.status(200).send({ status: 'fail' });
-    }
-    let posts = await open.getPosts(req.user_id, req.query.page * req.query.limit, req.query.limit).catch(err => { console.error(err); return res.status(200).send({ status: 'fail' }) });
+    let posts = await open.getPosts(req.user_id);
     if(posts.length < 1) {
         return res.status(200).send({ status: 'fail' });
     }
