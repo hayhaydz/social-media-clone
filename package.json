@@ -7,10 +7,9 @@
   "license": "ISC",
   "scripts": {
     "start": "node ./index.bundle.js",
-    "build": "webpack",
+    "build": "node index.js",
     "dev": "nodemon ./index.js"
   },
-  "heroku-run-build-script": false,
   "dependencies": {
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
