@@ -17,7 +17,7 @@ const Layout = ({ children, auth }) => {
     });
 
     return (
-        <main className="prose m-auto mt-8 max-w-screen-xl">
+        <main className="prose m-auto p-2 md:p-0 md:mt-8 max-w-screen-xl">
             <Head>
                 <title>Cool NextJS App</title>
                 <meta name="description" content="A super cool NextJS app" />

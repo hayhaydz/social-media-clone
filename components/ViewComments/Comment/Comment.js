@@ -3,7 +3,7 @@ import { DotsVerticalIcon } from '@heroicons/react/outline';
 import { Modal } from '../../';
 import DeleteComment from '../ManageComments/DeleteComment';
 
-const Comment = ({ comment_id, post_id, user_id, first_name, last_name, username, text, committed_at, currentUsersID, jwt }) => {
+const Comment = ({ comment_id, post_id, user_id, first_name, last_name, username, text, committed_at, currentUsersID, jwt, mutate }) => {
     const [isDeleting, setIsDeleting] = useState(false);
 
     let date = new Date(committed_at).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
@@ -34,7 +34,7 @@ const Comment = ({ comment_id, post_id, user_id, first_name, last_name, username
             <p className="break-words">{text}</p>
 
             {isDeleting &&
-                <Modal id="deleteModal" ><DeleteComment jwt={jwt} comment_id={comment_id} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} /></Modal>
+                <Modal id="deleteModal" ><DeleteComment jwt={jwt} comment_id={comment_id} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} mutate={mutate} /></Modal>
             }
         </div>
     )

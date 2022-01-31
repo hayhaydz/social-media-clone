@@ -4,7 +4,7 @@ import { deleteAuth } from '../../../utils/apiHandler';
 import { Error } from '../../';
 
 
-const DeleteComment = ({ jwt, comment_id, post_id, isDeleting, setIsDeleting }) => {
+const DeleteComment = ({ jwt, comment_id, post_id, isDeleting, setIsDeleting, mutate }) => {
     const [deleteData, setDeleteData] = useState({error: '' });
 
     const handleConfirmClick = async () => {
@@ -17,6 +17,7 @@ const DeleteComment = ({ jwt, comment_id, post_id, isDeleting, setIsDeleting }) 
         response.json().then(async (data) => {
             if(data.status === 'success') {
                 setIsDeleting(!isDeleting);
+                mutate();
                 Router.push({
                     pathname: `/p/${post_id}`,
                     query: { msg: data.message }
@@ -32,7 +33,7 @@ const DeleteComment = ({ jwt, comment_id, post_id, isDeleting, setIsDeleting }) 
     }
 
     return (
-        <div className="p-4 card bg-base-200 w-1/4">
+        <div className="p-4 card bg-base-200 w-full h-full rounded-none md:rounded-lg md:h-auto md:w-1/4">
             <h1 className="!mb-16">Are you sure you want to delete this comment?</h1>
             <div className="inline-flex gap-x-4">
                 <button className="btn btn-primary flex-grow" onClick={handleConfirmClick}>Confirm</button>

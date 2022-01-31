@@ -10,7 +10,7 @@ export const usePagination = (BASE_URL, JWT) => {
         return `${BASE_URL}?page=${pageIndex}&limit=${PAGE_SIZE}`;
     }
 
-    const { data: posts, error, size, setSize } = useSWRInfinite(getKey, fetcher);
+    const { data: posts, error, size, setSize, mutate, isValidating } = useSWRInfinite(getKey, fetcher);
 
     const fetchNextPage = () => setSize(size + 1);
     const paginatedPosts = posts?.flat();
@@ -23,5 +23,7 @@ export const usePagination = (BASE_URL, JWT) => {
         loadingMore,
         error,
         fetchNextPage,
+        mutate,
+        isValidating
     }
 };

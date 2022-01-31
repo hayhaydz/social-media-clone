@@ -2,9 +2,7 @@ import { useRouter } from 'next/router';
 import { withAuthSync } from '../utils/auth';
 import { Layout, Auth } from '../components';
 
-const Index = ({ auth, PRIVATE_URL }) => {
-  console.log(PRIVATE_URL);
-  console.log('private url: ', process.env.PRIVATE_API_URL);
+const Index = ({ auth }) => {
 
   const router = useRouter();
   if(auth) {

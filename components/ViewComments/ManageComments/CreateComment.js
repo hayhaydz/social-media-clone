@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { postAuth } from '../../../utils/apiHandler';
 import { Error } from '../../';
 
-const CreateComment = ({ jwt, currentUsersID, post_id }) => {
+const CreateComment = ({ jwt, currentUsersID, post_id, mutate }) => {
     const [commentData, setCommentData] = useState({ text: '', error: '' });
 
     const handleSubmit = async (e) => {
@@ -30,6 +30,7 @@ const CreateComment = ({ jwt, currentUsersID, post_id }) => {
                     text: '',
                     error: ''
                 });
+                mutate();
                 Router.push({
                     pathname: `/p/${post_id}`,
                     query: { msg: data.message }

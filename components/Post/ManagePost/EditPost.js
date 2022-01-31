@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Router from 'next/router';
 import { patchAuth } from '../../../utils/apiHandler';
 import { ManagePost } from '../../';
 

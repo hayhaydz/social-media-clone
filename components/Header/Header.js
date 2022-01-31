@@ -11,20 +11,21 @@ const Header = ({ jwt }) => {
 
     const handleSearchSubmit = (e) => {
         e.preventDefault();
-
-        Router.push({
-            pathname: '/search',
-            query: { q: searchQuery }
-        });
+        if(searchQuery.replace(/\s/g,'') !== '') {
+            Router.push({
+                pathname: '/search',
+                query: { q: searchQuery }
+            });
+        }
     }
 
     return (
-        <header className="navbar mb-8 shadow-lg bg-neutral text-neutral-content rounded-box">
+        <header className="navbar mb-8 flex flex-col items-start md:flex-row shadow-lg bg-neutral text-neutral-content rounded-box">
             <div className="flex-1 px-0 mx-0">
                 <Link href="/home"><button className="btn btn-ghost"><span className="text-lg font-bold lowercase">neem</span></button></Link>
             </div>
             {jwt && 
-                <div className="flex-none">
+                <div className="md:flex-none">
                     <form action="#" className="form-control mr-8" onSubmit={handleSearchSubmit}>
                         <div className="flex space-x-2">
                             <input 

@@ -26,7 +26,7 @@ const ManagePost = ({form, postData, setPostData, isEdit = false, handleSubmit, 
     }
 
     return (
-        <div className="p-4 card bg-base-200 w-1/4">
+        <div className="p-4 card bg-base-200 w-full h-full rounded-none md:rounded-lg md:h-auto md:w-1/4">
             <div className="flex w-full mb-4 justify-between items-center">
                 <span className={(postData.charCount > 480 ? 'text-red-500' : 'text-gray-300') + ' font-bold flex items-center'}>{postData.charCount}/480</span>
                 <button className="btn btn-ghost btn-square" id={isEdit ? 'editModalClose' : 'createModalClose'} onClick={() => {isEdit ? setIsEditing(false) : setIsCreating(false);}}><XCircleIcon className="w-6 h-6 mx-2 text-gray-300" /></button>
