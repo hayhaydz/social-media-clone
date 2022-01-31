@@ -32,7 +32,7 @@ const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
     }
 
     return (
-        <div className="p-4 card bg-base-200 w-1/4">
+        <div className="p-4 card bg-base-200 w-full h-full rounded-none md:rounded-lg md:h-auto md:w-1/4">
             <h1 className="!mb-16">Are you sure you want to delete this post?</h1>
             <div className="inline-flex gap-x-4">
                 <button className="btn btn-primary flex-grow" onClick={handleConfirmClick}>Confirm</button>

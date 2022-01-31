@@ -4,7 +4,7 @@ const router = express.Router();
 
 router.get('/', getUserMe);
 router.get('/search', searchUsers);
-router.get('/:username', getUserByUsername);
+router.get('/u/:username', getUserByUsername);
 router.get('/id/:id', getUserById);
 
 module.exports = router;

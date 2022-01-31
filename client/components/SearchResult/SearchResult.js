@@ -13,7 +13,7 @@ const SearchResult = ({ jwt, currentUsersID, query }) => {
     if(isError) return <div>Fetching posts has failed</div>;
 
     return (
-        <div className="searchResults grid grid-cols-3 gap-4">
+        <div className="searchResults grid grid-cols-1 md:grid-cols-3 gap-4">
             {response.data &&
                 response.data.map((user, index) => {
                     return <a href={`/u/${user.username}`} className="!no-underline !font-normal" ><User {...user} key={index} currentUsersID={currentUsersID} /></a>

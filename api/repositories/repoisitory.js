@@ -72,7 +72,7 @@ export class open {
         `, [userID, limit, offset]);
     }
 
-    static async getPostsByUsername(userID, username) {
+    static async getPostsByUsername(userID, username, offset, limit) {
         return dao.all(`
             SELECT 
                 posts.post_id, 
@@ -92,7 +92,8 @@ export class open {
             JOIN post_images ON post_images.image_id = posts.image_id 
             WHERE users.username = ?
             ORDER BY posts.post_id DESC
-        `, [userID, username]);
+            LIMIT ? OFFSET ?
+        `, [userID, username, limit, offset]);
     }
 
     static async getPostById(userID, postID) {

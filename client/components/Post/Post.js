@@ -1,17 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getAuth } from '../../utils/apiHandler';
 import { DotsVerticalIcon, HeartIcon, AnnotationIcon, ShareIcon } from '@heroicons/react/outline';
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid';
 import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, total_comments, is_liked_by_user, currentUsersID, jwt, isSingle}) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, total_comments, is_liked_by_user, currentUsersID, jwt, isSingle, mutate}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLiked, setIsLiked] = useState(is_liked_by_user);
     const [totalLikes, setTotalLikes] = useState(total_likes);
     const [totalComments, setTotalComments] = useState(total_comments);
 
+    useEffect(() => {
+        setIsLiked(is_liked_by_user);
+        setTotalLikes(total_likes);
+        setTotalComments(total_comments);
+    });
     const router = useRouter();
     let date = new Date(date_published).toLocaleDateString('en-us', { year:"numeric", month:"short", day:"numeric"});
 
@@ -39,14 +44,17 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
             if(result.status === 'success') {
                 setIsLiked(!isLiked);
                 setTotalLikes(result.data.total_likes);
+                mutate();
             } else {
-                console.log('There was an error with creating your post. Error message:', result.message);
+                console.log('There was an error with liking that post. Error message:', result.message);
             }
         });
     }
 
     const handleCommentClick = (e) => {
-        e.stopPropagation();
+        if(!isSingle) {
+            router.push(`/p/${post_id}`);
+        }
     }
 
     const handleShareClick = (e) => {
