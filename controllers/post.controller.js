@@ -15,7 +15,10 @@ export const getPosts = async (req, res) => {
 };
 
 export const getPostsByUsername = async (req, res) => {
-    let posts = await open.getPostsByUsername(req.user_id, req.params.username);
+    if(!req.query.page || !req.query.limit) {
+        return res.status(200).send({ status: 'fail' });
+    }
+    let posts = await open.getPostsByUsername(req.user_id, req.params.username, req.query.page * req.query.limit, req.query.limit);
     if(posts.length < 1) {
         return res.status(200).send({ status: 'fail' });
     }
@@ -42,7 +45,7 @@ export const newPost = async (req, res) => {
         imageID = filename.split('-')[0];
     }
 
-    if(text == null) {
+    if(text == null || text.replace(/\s/g,'') == '') {
         return res.status(400).send({ status: 'fail', message: 'Required post data was missing!' });
     }
 
