@@ -1,6 +1,8 @@
 import { closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 import jwt from 'jsonwebtoken';
+import nodemailer from 'nodemailer';
+import sgTransport from 'nodemailer-sendgrid-transport';
 
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
@@ -9,7 +11,11 @@ const {
     ACCESS_TOKEN_SECRET,
     REFRESH_TOKEN_SECRET,
     ACCESS_TOKEN_EXPIRES,
-    REFRESH_TOKEN_EXPIRES
+    REFRESH_TOKEN_EXPIRES,
+    VERIFICATION_TOKEN_SECRET,
+    VERIFICATION_TOKEN_EXPIRES,
+    BASE_URL,
+    SENDGRID_API_KEY
 } = require('../config');
 const saltRounds = 10;
 
@@ -55,6 +61,41 @@ const errorMessage = (res, msg) => {
     });
 }
 
+// https://stackoverflow.com/questions/39092822/how-to-confirm-email-address-using-express-node
+const handleVerification = async (userID, email) => {
+    const verification_token = jwt.sign({ user_id: userID }, VERIFICATION_TOKEN_SECRET, { expiresIn: `${VERIFICATION_TOKEN_EXPIRES}m` });
+    const url = BASE_URL + 'api/auth/verify/' + verification_token;
+
+    let transporter = nodemailer.createTransport(sgTransport({
+        auth: {
+            api_key: SENDGRID_API_KEY,
+        }
+    }));
+
+    // send mail with defined transport object
+    let info = transporter.sendMail({
+        from: '"NEEM SOCIAL" <no_reply@neem.gq>',
+        to: email,
+        subject: "Account Verification",
+        text: "Click on the link below to veriy your account \n\n" + url,
+        trackingSettings: {
+            clickTracking: {
+              enable: false,
+              enableText: false
+            },
+            openTracking: {
+              enable: false
+            }
+        }
+    }, (error, info) => {
+        if (error) {
+            console.log(error)
+            return;
+        }
+        transporter.close();
+    });
+}
+
 export const register = async (req, res) => {
     const {
         username,
@@ -78,6 +119,7 @@ export const register = async (req, res) => {
             let userID = crypto.randomBytes(16).toString("hex");
             closed.insertUser(userID, username, email, hash).then(() => {
                 closed.insertUserProfile(userID, first_name, last_name).then(() => {
+                    handleVerification(userID, email);
                     return res.json({ status: 'success' });
                 }).catch(err => { console.log(err); return errorMessage(res, 'Registering user profile failed');});
             }).catch(err => { console.log(err); return errorMessage(res, 'Registering user failed'); });
@@ -89,10 +131,46 @@ export const register = async (req, res) => {
     res.status(200);
 }
 
+export const resendVerify = async (req, res) => {
+    const email = req.body.email;
+    const user = await closed.getUserByEmail(email);
+    if(!user) {
+        return errorMessage(res, 'Could not find a user with that email address');
+    }
+
+    if(user.verification) {
+        return errorMessage(res, 'That user is already verified');
+    }
+
+    handleVerification(user.user_id, email);
+    return res.status(200).send({ status: 'success' });
+}
+
+export const verify = async (req, res) => {
+    const token = req.params.token;
+    if(!token) {
+        return errorMessage(res, 'No token was found for verification');
+    }
+
+    try {
+        const decoded = jwt.verify(token, VERIFICATION_TOKEN_SECRET, (err, dec) => { if(!err) return dec });
+        if(!decoded) return errorMessage(res, 'Invalid access token provided');
+        const { user_id } = decoded;
+        const user = await closed.getUserById(user_id);
+        if(user && !user.verification) {
+            await closed.setUserVerified(user_id);
+            return res.redirect('https://neem.gq/');
+        }
+    } catch (e) {
+        console.error(e);
+        return next();
+    }
+}
+
 export const login = async (req, res) => {
     const { username, email, password } = req.body;
 
-    let user; 
+    let user;
     if(username !== undefined) {
         user = await closed.getUserByUsername(username);
     } else if (email !== undefined) {
@@ -101,6 +179,10 @@ export const login = async (req, res) => {
     
     if(!user) {
         return errorMessage(res, 'Invalid username or password');
+    }
+
+    if(!user.verification) {
+        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
     }
 
     const match = await bcrypt.compare(password, user.password);
