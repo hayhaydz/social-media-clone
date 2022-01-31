@@ -191,19 +191,23 @@ export class open {
 
 export class closed {
     static async getUserByUsername(username) {
-        return dao.get("SELECT * FROM users WHERE username =?", [username]);
+        return dao.get("SELECT * FROM users WHERE username = ?", [username]);
     }
 
     static async getUserByEmail(email) {
-        return dao.get("SELECT * FROM users WHERE email =?", [email]);
+        return dao.get("SELECT * FROM users WHERE email = ?", [email]);
     }
 
     static async getUserById(id) {
-        return dao.get("SELECT * FROM users WHERE user_id =?", [id]);
+        return dao.get("SELECT * FROM users WHERE user_id = ?", [id]);
+    }
+
+    static async setUserVerified(id) {
+        return dao.run("UPDATE users SET verification = ? WHERE user_id = ?", [1, id]);
     }
 
     static async insertUser(id, usrnm, pswd, eml) {
-        return dao.run("INSERT INTO users (user_id, username, email, password) VALUES (?, ?, ?, ?)", [id, usrnm, pswd, eml]);
+        return dao.run("INSERT INTO users (user_id, username, email, password, verification) VALUES (?, ?, ?, ?, ?)", [id, usrnm, pswd, eml, 0]);
     }
 
     static async insertUserProfile(id, frstnm, lstnm) {
@@ -211,11 +215,11 @@ export class closed {
     }
 
     static async deleteToken(tkn) {
-        return dao.run("DELETE FROM access WHERE token =?", [tkn]);
+        return dao.run("DELETE FROM access WHERE token = ?", [tkn]);
     }
 
     static async checkToken(tkn) {
-        return dao.get("SELECT * FROM access WHERE token =?", [tkn]);
+        return dao.get("SELECT * FROM access WHERE token = ?", [tkn]);
     }
 
     static async insertToken(usrid, tkn, crt, exp) {

@@ -60,6 +60,7 @@ export default class {
                     username TEXT UNIQUE,
                     email TEXT UNIQUE,
                     password TEXT,
+                    verification INTEGER,
                     CONSTRAINT user_unique UNIQUE (user_id, username, email)
                 )`,
                 `CREATE TABLE IF NOT EXISTS user_profiles (
