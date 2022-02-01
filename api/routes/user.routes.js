@@ -4,9 +4,9 @@ const router = express.Router();
 
 router.get('/', getUserMe);
 router.get('/search', searchUsers);
-router.post('/updateUser', updateUser);
+router.post('/update', updateUser);
+router.post('/delete', deleteUser);
 router.get('/u/:username', getUserByUsername);
 router.get('/id/:id', getUserById);
-router.get('/id/:id/delete', deleteUser);
 
 module.exports = router;

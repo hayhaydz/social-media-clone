@@ -26,6 +26,7 @@ const SecuritySettings = ({jwt, changedFields, setChangedFields, setError }) => 
 
     const handleSecuritySave = async (e) => {
         e.preventDefault();
+        setError('');
 
         if(userSecurityData.newPassword === userSecurityData.repeatPassword) {
             let data = {
@@ -35,7 +36,7 @@ const SecuritySettings = ({jwt, changedFields, setChangedFields, setError }) => 
                 }
             }
 
-            const response = await postAuth(data, `${process.env.PRIVATE_API_URL}/api/user/updateUser`, jwt);
+            const response = await postAuth(data, `${process.env.PRIVATE_API_URL}/api/user/update`, jwt);
             response.json().then(async (result) => {
                 if(result.status === 'success') {
                     logout();
@@ -59,7 +60,7 @@ const SecuritySettings = ({jwt, changedFields, setChangedFields, setError }) => 
     }
 
     return (
-        <div>
+        <div className="mb-8">
             <h3 className="!mt-8 !mb-2">Security</h3>
             <div className="mb-4">
                 <label htmlFor="currentpPassword">Current Password</label>

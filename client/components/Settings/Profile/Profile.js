@@ -24,8 +24,9 @@ const ProfileSettings = ({ jwt, first_name, last_name, description, changedField
 
     const handleProfileSave = async (e) => {
         e.preventDefault();
+        setError('');
 
-        const response = await postAuth(changedFields, `${process.env.PRIVATE_API_URL}/api/user/updateUser`, jwt);
+        const response = await postAuth(changedFields, `${process.env.PRIVATE_API_URL}/api/user/update`, jwt);
         response.json().then(async (result) => {
             if(result.status === 'success') {
                 setIsEditingProfile(false);

@@ -44,10 +44,26 @@ export const searchUsers = async (req, res) => {
 }
 
 export const deleteUser = async (req, res) => {
-    let user = await open.getUserById(req.user_id);
+    const password = req.body.password;
+
+    if(!password) {
+        return res.status(400).send({ status: 'fail', message: 'You must confirm your password to delete your account' });
+    }
+
+    let user = await closed.getUserById(req.user_id);
     if(!user) {
         return res.status(400).send({ status: 'fail', message: 'Could not find the user that you are trying to find.' });
     }
+
+    if(!user.verification) {
+        return res.status(400).send({ status: 'fail', message: 'You must verify your account before you can delete it' });
+    }
+
+    const match = await bcrypt.compare(password, user.password);
+    if(!match) {
+        return res.status(400).send({ status: 'fail', message: 'Password provided was incorrect' });
+    }
+
     await closed.deleteUserById(user.user_id);
 
     return res.status(200).send({ status: 'success', message: 'Your account has been deleted successfully' });
@@ -97,7 +113,7 @@ export const updateUser = async (req, res) => {
             // https://stackoverflow.com/questions/4059147/check-if-a-variable-is-a-string-in-javascript
             if(typeof req.body[key] === 'string' || req.body[key] instanceof String) {
                 if(req.body[key].replace(/\s/g,'') == '' && key !== 'description') {
-                    return res.status(400).send({ status: 'fail', data: user, message: 'Please provide non-blank information' });
+                    return res.status(400).send({ status: 'fail', data: user, message: 'Input information must contain valid characters' });
                 }
             }
 
@@ -107,6 +123,7 @@ export const updateUser = async (req, res) => {
     }
 
     await closed.updateUser(user.user_id, user.username, user.email, user.first_name, user.last_name, user.description);
+    user = await closed.getUserById(req.user_id);
     
     return res.status(200).send({ status: 'success', data: user, message: 'Your account has been updated successfully' });
 }

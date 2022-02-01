@@ -17,3 +17,4 @@ export { default as Settings } from './Settings/Settings';
 export { default as ProfileSettings } from './Settings/Profile/Profile';
 export { default as AccountSettings } from './Settings/Account/Account';
 export { default as SecuritySettings } from './Settings/Security/Security';
+export { default as DeleteSettings } from './Settings/Delete/Delete';

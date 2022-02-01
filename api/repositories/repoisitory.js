@@ -232,6 +232,10 @@ export class closed {
         return dao.run("UPDATE users SET verification = ? WHERE user_id = ?", [isVerified, id]);
     }
 
+    static async checkUserVerified(id) {
+        return dao.get("SELECT verification FROM users WHERe user_id = ?", [id]);
+    }
+
     static async insertUser(id, usrnm, pswd, eml) {
         return dao.run("INSERT INTO users (user_id, username, email, password, verification) VALUES (?, ?, ?, ?, ?)", [id, usrnm, pswd, eml, 0]);
     }

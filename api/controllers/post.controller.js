@@ -1,4 +1,4 @@
-import { open } from '../repositories/repoisitory';
+import { open, closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 
 export const getPosts = async (req, res) => {
@@ -57,8 +57,9 @@ export const newPost = async (req, res) => {
         await open.insertImage(imageID, filename).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
     }
 
-    if(!user.verification) {
-        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
+    let userCheck = await closed.checkUserVerified(req.user_id);
+    if(!userCheck.verification) {
+        return res.status(400).send({ status: 'fail', message: 'You need to verify your account before you can do that!' });
     }
 
     await open.insertPost(req.user_id, text, imageID, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
@@ -79,10 +80,6 @@ export const updatePost = async (req, res) => {
     }
     if(text === post.text) {
         return res.status(400).send({ status: 'fail', message: 'Post text has not changed' });
-    }
-
-    if(!user.verification) {
-        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
     }
 
     await open.updatePost(req.params.id, text).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with updating your post.'})});

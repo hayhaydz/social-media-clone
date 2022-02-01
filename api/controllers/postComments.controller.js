@@ -1,4 +1,4 @@
-import { open } from '../repositories/repoisitory';
+import { open, closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 
 export const getComments = async (req, res) => {
@@ -28,8 +28,9 @@ export const newComment = async (req, res) => {
         return res.status(400).send({ status: 'fail', message: 'Could not find the post you are trying to comment on' });
     }
 
-    if(!user.verification) {
-        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
+    let userCheck = await closed.checkUserVerified(req.user_id);
+    if(!userCheck.verification) {
+        return res.status(400).send({ status: 'fail', message: 'You need to verify your account before you can do that!' });
     }
 
     await open.insertPostComments(req.user_id, req.params.id, comment, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with commenting on the post.'})});
@@ -49,10 +50,6 @@ export const removeComment = async (req, res) => {
     }
     if(post.post_id !== comment.post_id) {
         return res.status(400).send({ status: 'fail', message: 'Invalid request made for removing a comment'});
-    }
-
-    if(!user.verification) {
-        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
     }
 
     await open.removePostComments(req.params.commentID).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with removing the comment.'})});
