@@ -69,7 +69,7 @@ export default class {
                     first_name TEXT,
                     last_name TEXT,
                     description TEXT,
-                    FOREIGN KEY(user_id) REFERENCES users(user_id)
+                    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`,
                 `CREATE TABLE IF NOT EXISTS access (
                     access_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -77,7 +77,7 @@ export default class {
                     token TEXT,
                     created_at INTEGER,
                     expires_at INTEGER,
-                    FOREIGN KEY(user_id) REFERENCES users(user_id)
+                    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`,
                 `CREATE TABLE IF NOT EXISTS posts (
                     post_id INTEGER PRIMARY KEY AUTOINCREMENT, 
@@ -85,7 +85,7 @@ export default class {
                     text TEXT,
                     image_id BLOB,
                     date_published INTEGER,
-                    FOREIGN KEY(user_id) REFERENCES users(user_id)
+                    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                     FOREIGN KEY(image_id) REFERENCES post_images(image_id)
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_images (
@@ -99,7 +99,7 @@ export default class {
                     user_id BLOB,
                     committed_at INTEGER,
                     FOREIGN KEY(post_id) REFERENCES posts(post_id),
-                    FOREIGN KEY(user_id) REFERENCES users(user_id)
+                    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_comments (
                     comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -108,7 +108,7 @@ export default class {
                     text TEXT,
                     committed_at INTEGER,
                     FOREIGN KEY(post_id) REFERENCES posts(post_id),
-                    FOREIGN KEY(user_id) REFERENCES users(user_id)
+                    FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`
             ];
 
@@ -118,6 +118,8 @@ export default class {
                 console.error('BATCH FAILED ' + err);
             });
 
+            db.run("PRAGMA foreign_keys = ON");
+
             db.get("SELECT user_id FROM users WHERE username =?", ['foo'], (err, res) => {
                 if(!res) {
                     let password = '123';
@@ -126,7 +128,7 @@ export default class {
                             let userID = crypto.randomBytes(16).toString("hex");
                             let currentTime = Date.now();
                             const stmts = [
-                                `INSERT INTO users (user_id, username, password) VALUES ('${userID}', 'foo', '${hash}');`,
+                                `INSERT INTO users (user_id, username, password, verification) VALUES ('${userID}', 'foo', '${hash}', 1);`,
                                 `INSERT INTO user_profiles (user_id, first_name, last_name) VALUES ('${userID}', 'foo', 'bar');`,
                                 `INSERT INTO posts (user_id, text, date_published) VALUES ('${userID}', 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, esse excepturi maxime fugiat eveniet est quos voluptatum illum. Ullam accusamus quas itaque quasi beatae laborum repudiandae maxime minima, ex provident!', ${currentTime});`
                             ];
