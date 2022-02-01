@@ -15,7 +15,7 @@ const User = ({ auth, currentUser }) => {
         }
     } else {
         return (
-            <Layout auth={auth.token}>
+            <Layout auth={auth.token} currentUser={currentUser}>
                 <Profile jwt={auth.token} currentUsersID={currentUser.user_id} query_id={pid} message={message} setMessage={setMessage} />
             </Layout>
         )

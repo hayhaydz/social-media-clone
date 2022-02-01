@@ -12,7 +12,7 @@ const Home = ({ auth, currentUser }) => {
         }
     } else {
         return (
-            <Layout auth={auth.token} >
+            <Layout auth={auth.token} currentUser={currentUser}>
                 <App jwt={auth.token} currentUser={currentUser} />
             </Layout>
         )

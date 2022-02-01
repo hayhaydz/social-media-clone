@@ -13,3 +13,7 @@ export { default as ViewPosts } from './Post/ViewPosts/ViewPosts';
 export { default as ViewComments } from './ViewComments/ViewComments';
 export { default as Profile } from './Profile/Profile';
 export { default as SearchResult } from './SearchResult/SearchResult';
+export { default as Settings } from './Settings/Settings';
+export { default as ProfileSettings } from './Settings/Profile/Profile';
+export { default as AccountSettings } from './Settings/Account/Account';
+export { default as SecuritySettings } from './Settings/Security/Security';

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import Link from 'next/link';
-import Router from 'next/router'
+import Router from 'next/router';
 import { logout } from '../../utils/auth';
-import { LogoutIcon, PlusCircleIcon } from '@heroicons/react/outline';
+import { UserIcon, PlusCircleIcon } from '@heroicons/react/outline';
 import { Modal, CreatePost } from '../';
 
-const Header = ({ jwt }) => {
+const Header = ({ jwt, currentUsersUsername }) => {
     const [isCreating, setIsCreating] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -17,6 +17,20 @@ const Header = ({ jwt }) => {
                 query: { q: searchQuery }
             });
         }
+    }
+
+    const handleProfileClick = (e) => {
+        e.preventDefault();
+        Router.push({
+            pathname: `/u/${currentUsersUsername}`
+        });
+    }
+
+    const handleSettingsClick = (e) => {
+        e.preventDefault();
+        Router.push({
+            pathname: `/settings`
+        });
     }
 
     return (
@@ -40,7 +54,20 @@ const Header = ({ jwt }) => {
                         </div>
                     </form>
                     <button className="btn btn-ghost btn-square modal-button mr-2" onClick={() => setIsCreating(!isCreating)}><PlusCircleIcon className="w-6 h-6 mx-2" /></button>
-                    <button className="btn btn-ghost btn-square" onClick={logout}><LogoutIcon className="w-6 h-6 mx-2" /></button>
+                    <div className="dropdown dropdown-end">
+                        <button className="btn btn-ghost btn-square" tabIndex="0"><UserIcon className="w-6 h-6 mx-2" /></button>
+                        <ul tabIndex="0" className="p-2 shadow menu dropdown-content bg-neutral rounded-box w-52 overflow-visible gap-2">
+                            <li className="before:hidden !pl-0 !my-0">
+                                <a className="btn btn-ghost btn-sm flex items-center normal-case modal-button !no-underline !p-2" onClick={handleProfileClick}>View Profile</a>
+                            </li>
+                            <li className="before:hidden !pl-0 !my-0">
+                                <a className="btn btn-ghost btn-sm flex items-center normal-case modal-button !no-underline !p-2" onClick={handleSettingsClick}>Settings</a>
+                            </li>
+                            <li className="before:hidden !pl-0 !my-0">
+                                <a className="btn btn-ghost btn-sm normal-case !text-red-600 modal-button !no-underline !p-2" onClick={logout}>Logout</a>
+                            </li>
+                        </ul>
+                    </div>
                     {isCreating &&
                         <Modal id="createModal"><CreatePost jwt={jwt} setIsCreating={setIsCreating} /></Modal>
                     }
