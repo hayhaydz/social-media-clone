@@ -17,10 +17,18 @@ const Profile = ({ jwt, currentUsersID, query_id, message, setMessage }) => {
                 <>
                     {response.status !== 'fail' &&
                         <>
-                            <h2>{response.data.first_name} {response.data.last_name}</h2>
-                            {response.data.description &&
-                                <p>{response.data.description}</p>
-                            }
+                            <div className="flex justify-between items-center mb-8">
+                                <div>
+                                <h2 className="!text-5xl font-bold !mt-8">{`${response.data.first_name} ${response.data.last_name}`}</h2>
+                                {response.data.description &&
+                                    <p className="max-w-lg">{response.data.description}</p>
+                                }
+                                </div>
+                                
+                                {response.data.user_id == currentUsersID &&
+                                    <button className="btn btn-primary">Edit Profile</button>
+                                }
+                            </div>
                             <ViewPosts jwt={jwt} currentUsersID={currentUsersID} message={message} setMessage={setMessage} BASE_URL={`${process.env.PRIVATE_API_URL}/api/post/u/${response.data.username}`} />
                         </>
                     }

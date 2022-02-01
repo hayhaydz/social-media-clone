@@ -2,6 +2,7 @@ import Link from 'next/link';
 import useSWR from 'swr';
 import { getAuth } from '../../../utils/apiHandler';
 import Post from '../Post';
+import { ViewComments } from '../../';
 
 const SinglePost = ({ jwt, currentUser, query_id }) => {
     const fetcher = (url, token) => getAuth(url, token).then((r) => r.json());
@@ -18,6 +19,7 @@ const SinglePost = ({ jwt, currentUser, query_id }) => {
                     {response.status !== 'fail' &&
                         <>
                             <Post {...response.data} jwt={jwt} currentUsersID={currentUser.user_id} isSingle={true} mutate={mutate} />
+                            <ViewComments jwt={jwt} currentUser={currentUser} query_id={query_id}/>
                         </>
                     }
                 </>

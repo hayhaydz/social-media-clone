@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Header from '../Header/Header';
 import { Error, Success } from '../';
 
-const Layout = ({ children, auth }) => {
+const Layout = ({ children, auth, currentUser }) => {
     const router = useRouter();
 
     useEffect(() => {
@@ -23,7 +23,11 @@ const Layout = ({ children, auth }) => {
                 <meta name="description" content="A super cool NextJS app" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <Header jwt={auth} />
+            {currentUser ?
+                <Header jwt={auth} currentUsersUsername={currentUser.username}/>
+                : <Header jwt={auth} />
+            }
+            
             
             {children}
             {router.query.msg &&

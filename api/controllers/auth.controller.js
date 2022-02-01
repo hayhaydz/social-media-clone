@@ -1,8 +1,7 @@
 import { closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 import jwt from 'jsonwebtoken';
-import nodemailer from 'nodemailer';
-import sgTransport from 'nodemailer-sendgrid-transport';
+import { handleVerification, errorMessage } from '../utils/hooks';
 
 const bcrypt = require('bcrypt');
 const crypto = require("crypto");
@@ -12,10 +11,7 @@ const {
     REFRESH_TOKEN_SECRET,
     ACCESS_TOKEN_EXPIRES,
     REFRESH_TOKEN_EXPIRES,
-    VERIFICATION_TOKEN_SECRET,
-    VERIFICATION_TOKEN_EXPIRES,
-    BASE_URL,
-    SENDGRID_API_KEY
+    VERIFICATION_TOKEN_SECRET
 } = require('../config');
 const saltRounds = 10;
 
@@ -50,49 +46,6 @@ export const authenticated = (req, res, next) => {
     res.json({ 
         status: 'fail',
         message: 'You are not authenticated'
-    });
-}
-
-const errorMessage = (res, msg) => {
-    res.status(401);
-    return res.json({ 
-        status: 'fail',
-        message: msg 
-    });
-}
-
-// https://stackoverflow.com/questions/39092822/how-to-confirm-email-address-using-express-node
-const handleVerification = async (userID, email) => {
-    const verification_token = jwt.sign({ user_id: userID }, VERIFICATION_TOKEN_SECRET, { expiresIn: `${VERIFICATION_TOKEN_EXPIRES}m` });
-    const url = BASE_URL + 'api/auth/verify/' + verification_token;
-
-    let transporter = nodemailer.createTransport(sgTransport({
-        auth: {
-            api_key: SENDGRID_API_KEY,
-        }
-    }));
-
-    // send mail with defined transport object
-    let info = transporter.sendMail({
-        from: '"NEEM SOCIAL" <no_reply@neem.gq>',
-        to: email,
-        subject: "Account Verification",
-        text: "Click on the link below to veriy your account \n\n" + url,
-        trackingSettings: {
-            clickTracking: {
-              enable: false,
-              enableText: false
-            },
-            openTracking: {
-              enable: false
-            }
-        }
-    }, (error, info) => {
-        if (error) {
-            console.log(error)
-            return;
-        }
-        transporter.close();
     });
 }
 
@@ -158,7 +111,7 @@ export const verify = async (req, res) => {
         const { user_id } = decoded;
         const user = await closed.getUserById(user_id);
         if(user && !user.verification) {
-            await closed.setUserVerified(user_id);
+            await closed.setUserVerified(user_id, 1);
             return res.redirect('https://neem.gq/');
         }
     } catch (e) {
@@ -179,10 +132,6 @@ export const login = async (req, res) => {
     
     if(!user) {
         return errorMessage(res, 'Invalid username or password');
-    }
-
-    if(!user.verification) {
-        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
     }
 
     const match = await bcrypt.compare(password, user.password);

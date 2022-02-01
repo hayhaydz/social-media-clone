@@ -199,11 +199,37 @@ export class closed {
     }
 
     static async getUserById(id) {
-        return dao.get("SELECT * FROM users WHERE user_id = ?", [id]);
+        return dao.get(`
+        SELECT 
+            *
+        FROM users
+        JOIN user_profiles ON user_profiles.user_id = users.user_id 
+        WHERE users.user_id = ?
+        `, [id]);
     }
 
-    static async setUserVerified(id) {
-        return dao.run("UPDATE users SET verification = ? WHERE user_id = ?", [1, id]);
+    static async getUserMe(id) {
+        return dao.get(`
+            SELECT 
+                users.user_id, 
+                users.username, 
+                users.email,
+                users.verification,
+                user_profiles.first_name,
+                user_profiles.last_name,
+                user_profiles.description 
+            FROM users
+            JOIN user_profiles ON user_profiles.user_id = users.user_id
+            WHERE users.user_id = ?
+        `, [id]);
+    }
+
+    static async deleteUserById(id) {
+        return dao.run("DELETE FROM users WHERE user_id = ?", [id]);
+    }
+
+    static async setUserVerified(id, isVerified) {
+        return dao.run("UPDATE users SET verification = ? WHERE user_id = ?", [isVerified, id]);
     }
 
     static async insertUser(id, usrnm, pswd, eml) {
@@ -212,6 +238,19 @@ export class closed {
 
     static async insertUserProfile(id, frstnm, lstnm) {
         return dao.run("INSERT INTO user_profiles (user_id, first_name, last_name) VALUES (?, ?, ?)", [id, frstnm, lstnm]);
+    }
+
+    static async updateUser(id, usrnm, eml, frstnm, lstnm, desc) {
+        dao.run("UPDATE users SET username = ?, email = ? WHERE user_id = ?", [usrnm, eml, id]);
+        return dao.run("UPDATE user_profiles SET first_name = ?, last_name = ?, description = ? WHERE user_id = ?", [frstnm, lstnm, desc, id]);
+    }
+
+    static async updatePassword(id, pass) {
+        return dao.run("UPDATE users SET password = ? WHERE user_id = ?", [pass, id]);
+    }
+
+    static async logoutUserSessions(id) {
+        dao.run("DELETE FROM access WHERE user_id = ?", [id]);
     }
 
     static async deleteToken(tkn) {

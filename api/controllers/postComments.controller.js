@@ -28,6 +28,10 @@ export const newComment = async (req, res) => {
         return res.status(400).send({ status: 'fail', message: 'Could not find the post you are trying to comment on' });
     }
 
+    if(!user.verification) {
+        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
+    }
+
     await open.insertPostComments(req.user_id, req.params.id, comment, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with commenting on the post.'})});
 
     return res.status(200).send({ status: 'success', message: 'You have commented on the post successfully' });
@@ -45,6 +49,10 @@ export const removeComment = async (req, res) => {
     }
     if(post.post_id !== comment.post_id) {
         return res.status(400).send({ status: 'fail', message: 'Invalid request made for removing a comment'});
+    }
+
+    if(!user.verification) {
+        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
     }
 
     await open.removePostComments(req.params.commentID).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with removing the comment.'})});

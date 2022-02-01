@@ -57,6 +57,10 @@ export const newPost = async (req, res) => {
         await open.insertImage(imageID, filename).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
     }
 
+    if(!user.verification) {
+        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
+    }
+
     await open.insertPost(req.user_id, text, imageID, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
 
     res.status(200).send({ status: 'success', message: 'Your post was created successfully' });
@@ -75,6 +79,10 @@ export const updatePost = async (req, res) => {
     }
     if(text === post.text) {
         return res.status(400).send({ status: 'fail', message: 'Post text has not changed' });
+    }
+
+    if(!user.verification) {
+        return errorMessage(res, 'Please verify your account first. Check your spam folder!');
     }
 
     await open.updatePost(req.params.id, text).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with updating your post.'})});

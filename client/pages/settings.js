@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import { withAuthSync } from '../utils/auth';
 import webRoutes from '../utils/webRoutes';
-import { Layout, SearchResult } from '../components';
+import { Layout, Settings } from '../components';
 
-const Search = ({ auth, currentUser }) => {
+const SettingsPage = ({ auth, currentUser }) => {
     const router = useRouter();
 
     if(!auth) {
@@ -13,10 +13,11 @@ const Search = ({ auth, currentUser }) => {
     } else {
         return (
             <Layout auth={auth.token} currentUser={currentUser}>
-                <h1>Searching for "{router.query.q}"</h1>
-                <SearchResult jwt={auth.token} currentUsersID={currentUser.user_id} query={router.query.q} />
+                <Settings jwt={auth.token} currentUser={currentUser} />
             </Layout>
         )
     }
+
+    return <div></div>
 }
-export default withAuthSync(Search);
+export default withAuthSync(SettingsPage);

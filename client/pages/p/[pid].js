@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { withAuthSync } from '../../utils/auth';
 import webRoutes from '../../utils/webRoutes';
-import { Layout, SinglePost, ViewComments } from '../../components';
+import { Layout, SinglePost } from '../../components';
 
 
 const Post = ({ auth, currentUser }) => {
@@ -14,9 +14,8 @@ const Post = ({ auth, currentUser }) => {
         }
     } else {
         return (
-            <Layout auth={auth.token}>
+            <Layout auth={auth.token} currentUser={currentUser}>
                 <SinglePost jwt={auth.token} currentUser={currentUser} query_id={pid} />
-                <ViewComments jwt={auth.token} currentUser={currentUser} query_id={pid}/>
             </Layout>
         )
     }
