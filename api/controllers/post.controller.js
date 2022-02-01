@@ -1,6 +1,8 @@
 import { open, closed } from '../repositories/repoisitory';
 import dao from '../repositories/dao';
 
+const crypto = require("crypto");
+
 export const getPosts = async (req, res) => {
     if(!req.query.page || !req.query.limit) {
         return res.status(200).send({ status: 'fail' });
@@ -62,7 +64,8 @@ export const newPost = async (req, res) => {
         return res.status(400).send({ status: 'fail', message: 'You need to verify your account before you can do that!' });
     }
 
-    await open.insertPost(req.user_id, text, imageID, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
+    let postID = crypto.randomBytes(8).toString("hex");
+    await open.insertPost(postID, req.user_id, text, imageID, Date.now()).catch(error => { console.error(error); res.status(400).send({ status: 'fail', message: 'There was an error with creating a new post.'})});
 
     res.status(200).send({ status: 'success', message: 'Your post was created successfully' });
 };

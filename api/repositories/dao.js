@@ -80,11 +80,12 @@ export default class {
                     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`,
                 `CREATE TABLE IF NOT EXISTS posts (
-                    post_id INTEGER PRIMARY KEY AUTOINCREMENT, 
+                    post_id BLOB PRIMARY KEY UNIQUE, 
                     user_id BLOB,
                     text TEXT,
                     image_id BLOB,
                     date_published INTEGER,
+                    CONSTRAINT post_unique UNIQUE (post_id),
                     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                     FOREIGN KEY(image_id) REFERENCES post_images(image_id) ON DELETE CASCADE
                 )`,
@@ -95,7 +96,7 @@ export default class {
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_likes (
                     like_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    post_id INTEGER,
+                    post_id BLOB,
                     user_id BLOB,
                     committed_at INTEGER,
                     FOREIGN KEY(post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
@@ -103,7 +104,7 @@ export default class {
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_comments (
                     comment_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    post_id INTEGER,
+                    post_id BOB,
                     user_id BLOB,
                     text TEXT,
                     committed_at INTEGER,
@@ -122,15 +123,16 @@ export default class {
 
             db.get("SELECT user_id FROM users WHERE username =?", ['foo'], (err, res) => {
                 if(!res) {
-                    let password = '123';
+                    let password = '&nuNGTNpqMW@d88g';
                     bcrypt.hash(password, saltRounds, ((err, hash) => {
                         if(!err) {
                             let userID = crypto.randomBytes(16).toString("hex");
+                            let postID = crypto.randomBytes(8).toString("hex");
                             let currentTime = Date.now();
                             const stmts = [
-                                `INSERT INTO users (user_id, username, password, verification) VALUES ('${userID}', 'foo', '${hash}', 1);`,
-                                `INSERT INTO user_profiles (user_id, first_name, last_name) VALUES ('${userID}', 'foo', 'bar');`,
-                                `INSERT INTO posts (user_id, text, date_published) VALUES ('${userID}', 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, esse excepturi maxime fugiat eveniet est quos voluptatum illum. Ullam accusamus quas itaque quasi beatae laborum repudiandae maxime minima, ex provident!', ${currentTime});`
+                                `INSERT INTO users (user_id, username, password, verification) VALUES ('${userID}', 'admin', '${hash}', 1);`,
+                                `INSERT INTO user_profiles (user_id, first_name, last_name) VALUES ('${userID}', 'root', 'user');`,
+                                `INSERT INTO posts (post_id, user_id, text, date_published) VALUES ('${postID}', '${userID}', 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius, esse excepturi maxime fugiat eveniet est quos voluptatum illum. Ullam accusamus quas itaque quasi beatae laborum repudiandae maxime minima, ex provident!', ${currentTime});`
                             ];
 
                             this.runBatch(stmts).then(results => {
