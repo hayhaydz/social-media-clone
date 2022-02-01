@@ -4,7 +4,7 @@ import useSWR from 'swr';
 import { getAuth } from '../../utils/apiHandler';
 import ViewPosts from '../Post/ViewPosts/ViewPosts';
 
-const Profile = ({ jwt, currentUsersID, query_id, message, setMessage }) => {
+const Profile = ({ jwt, currentUser, query_id, PUBLIC_URL }) => {
     const fetcher = (url, token) => getAuth(url, token).then((r) => r.json());
     const url = `${process.env.PRIVATE_API_URL}/api/user/u/${query_id}`;
     const { data: response = {}, isLoading, isError } = useSWR([url, jwt], fetcher);
@@ -20,17 +20,17 @@ const Profile = ({ jwt, currentUsersID, query_id, message, setMessage }) => {
                         <>
                             <div className="flex justify-between items-center mb-8">
                                 <div>
-                                <h2 className="!text-5xl font-bold !mt-8">{`${response.data.first_name} ${response.data.last_name}`}</h2>
+                                <h1 className="!text-5xl font-bold !mt-8 uppercase">{`${response.data.first_name} ${response.data.last_name}`}</h1>
                                 {response.data.description &&
                                     <p className="max-w-lg">{response.data.description}</p>
                                 }
                                 </div>
                                 
-                                {response.data.user_id == currentUsersID &&
+                                {response.data.user_id == currentUser.user_id &&
                                     <button className="btn btn-primary" onClick={() => Router.push('/settings')}>Edit Profile</button>
                                 }
                             </div>
-                            <ViewPosts jwt={jwt} currentUsersID={currentUsersID} message={message} setMessage={setMessage} BASE_URL={`${process.env.PRIVATE_API_URL}/api/post/u/${response.data.username}`} />
+                            <ViewPosts jwt={jwt} currentUser={currentUser} BASE_URL={`${process.env.PRIVATE_API_URL}/api/post/u/${response.data.username}`} PUBLIC_URL={`${process.env.NEXT_PUBLIC_API_URL}`} />
                         </>
                     }
                 </>

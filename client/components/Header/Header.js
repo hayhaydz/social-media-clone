@@ -2,11 +2,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Router from 'next/router';
 import { logout } from '../../utils/auth';
-import { UserIcon, PlusCircleIcon } from '@heroicons/react/outline';
-import { Modal, CreatePost } from '../';
+import { UserIcon } from '@heroicons/react/outline';
 
 const Header = ({ jwt, currentUsersUsername }) => {
-    const [isCreating, setIsCreating] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const handleSearchSubmit = (e) => {
@@ -40,7 +38,7 @@ const Header = ({ jwt, currentUsersUsername }) => {
             </div>
             {jwt && 
                 <div className="md:flex-none">
-                    <form action="#" className="form-control mr-8" onSubmit={handleSearchSubmit}>
+                    <form action="#" className="form-control mr-2" onSubmit={handleSearchSubmit}>
                         <div className="flex space-x-2">
                             <input 
                                 type="text" 
@@ -53,7 +51,6 @@ const Header = ({ jwt, currentUsersUsername }) => {
                             <button type="submit" className="btn btn-primary btn-outline">go</button>
                         </div>
                     </form>
-                    <button className="btn btn-ghost btn-square modal-button mr-2" onClick={() => setIsCreating(!isCreating)}><PlusCircleIcon className="w-6 h-6 mx-2" /></button>
                     <div className="dropdown dropdown-end">
                         <button className="btn btn-ghost btn-square" tabIndex="0"><UserIcon className="w-6 h-6 mx-2" /></button>
                         <ul tabIndex="0" className="p-2 shadow menu dropdown-content bg-neutral rounded-box w-52 overflow-visible gap-2">
@@ -68,9 +65,6 @@ const Header = ({ jwt, currentUsersUsername }) => {
                             </li>
                         </ul>
                     </div>
-                    {isCreating &&
-                        <Modal id="createModal"><CreatePost jwt={jwt} setIsCreating={setIsCreating} /></Modal>
-                    }
                 </div>
             }
         </header>

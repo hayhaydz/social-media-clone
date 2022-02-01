@@ -15,7 +15,7 @@ const Post = ({ auth, currentUser }) => {
     } else {
         return (
             <Layout auth={auth.token} currentUser={currentUser}>
-                <SinglePost jwt={auth.token} currentUser={currentUser} query_id={pid} />
+                <SinglePost jwt={auth.token} currentUser={currentUser} query_id={pid} PUBLIC_URL={`${process.env.NEXT_PUBLIC_API_URL}`}/>
             </Layout>
         )
     }

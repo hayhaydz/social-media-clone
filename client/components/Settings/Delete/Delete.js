@@ -18,8 +18,7 @@ const DeleteAccount = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
             if(data.status === 'success') {
                 setIsDeleting(!isDeleting);
                 Router.push({
-                    pathname: '/home',
-                    query: { msg: data.message }
+                    pathname: '/',
                 });
             } else {
                 console.log('There was an error with deleting your account. Error message:', data.message);

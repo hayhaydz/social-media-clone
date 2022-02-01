@@ -90,6 +90,7 @@ export const updatePost = async (req, res) => {
 export const removePost = async (req, res) => {
     let post = await open.checkPostById(req.params.id);
     if(!post) return res.status(400).send({ status: 'fail', message: 'Could not find a post with that ID.' });
+    
     if(req.user_id !== post.user_id) {
         return res.status(400).send({ status: 'fail', message: 'You do not have access to this post' });
     }

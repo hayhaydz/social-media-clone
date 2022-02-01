@@ -86,7 +86,7 @@ export default class {
                     image_id BLOB,
                     date_published INTEGER,
                     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
-                    FOREIGN KEY(image_id) REFERENCES post_images(image_id)
+                    FOREIGN KEY(image_id) REFERENCES post_images(image_id) ON DELETE CASCADE
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_images (
                     image_id BLOB PRIMARY KEY UNIQUE,
@@ -98,7 +98,7 @@ export default class {
                     post_id INTEGER,
                     user_id BLOB,
                     committed_at INTEGER,
-                    FOREIGN KEY(post_id) REFERENCES posts(post_id),
+                    FOREIGN KEY(post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
                     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`,
                 `CREATE TABLE IF NOT EXISTS post_comments (
@@ -107,7 +107,7 @@ export default class {
                     user_id BLOB,
                     text TEXT,
                     committed_at INTEGER,
-                    FOREIGN KEY(post_id) REFERENCES posts(post_id),
+                    FOREIGN KEY(post_id) REFERENCES posts(post_id) ON DELETE CASCADE,
                     FOREIGN KEY(user_id) REFERENCES users(user_id) ON DELETE CASCADE
                 )`
             ];

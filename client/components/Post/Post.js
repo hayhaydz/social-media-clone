@@ -5,7 +5,7 @@ import { DotsVerticalIcon, HeartIcon, AnnotationIcon, ShareIcon } from '@heroico
 import { HeartIcon as HeartIconSolid } from '@heroicons/react/solid';
 import { Modal, EditPost, DeletePost } from '../';
 
-const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, total_comments, is_liked_by_user, currentUsersID, jwt, isSingle, mutate}) => {
+const Post = ({ post_id, user_id, first_name, last_name, username, text, date_published, filename, total_likes, total_comments, is_liked_by_user, currentUsersID, jwt, PUBLIC_URL, isSingle, mutate, setFeedbackMsg }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLiked, setIsLiked] = useState(is_liked_by_user);
@@ -57,8 +57,29 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
         }
     }
 
+    // https://codesandbox.io/s/react-web-share-api-tbirz?from-embed=&file=/src/index.js
     const handleShareClick = (e) => {
         e.stopPropagation();
+
+        if (navigator.share) {
+            navigator.share({
+                url: `${PUBLIC_URL}/p/${post_id}`
+              }).then(() => {
+                
+              }).catch(() => {
+                console.log("Sharing failed");
+                setFeedbackMsg({
+                    isError: True,
+                    text: 'Sharing failed...'
+                })
+              });
+          } else {
+            console.log("Sorry! Your browser does not support Web Share API");
+            setFeedbackMsg({
+                isError: True,
+                text: 'Sorry! Your browser does not support Web Share API'
+            })
+          }
     }
 
     const handleUsernameClick = (e) => {
@@ -119,10 +140,10 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
             </div>
 
             {isEditing &&
-                <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} /></Modal>
+                <Modal id="editModal" ><EditPost jwt={jwt} post_id={post_id} text={text} setIsEditing={setIsEditing} mutate={mutate} setFeedbackMsg={setFeedbackMsg} /></Modal>
             }
             {isDeleting &&
-                <Modal id="deleteModal" ><DeletePost jwt={jwt} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} /></Modal>
+                <Modal id="deleteModal" ><DeletePost jwt={jwt} post_id={post_id} isDeleting={isDeleting} setIsDeleting={setIsDeleting} mutate={mutate} setFeedbackMsg={setFeedbackMsg} /></Modal>
             }
         </article>
     )

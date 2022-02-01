@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { postFormDataAuth } from '../../../utils/apiHandler';
 import { ManagePost } from '../../';
 
-const CreatePost = ({ jwt, setIsCreating }) => {
+const CreatePost = ({ jwt, setIsCreating, mutate, setFeedbackMsg }) => {
     const [postData, setPostData] = useState({ text: '', imageName: '', charCount: 0, error: '' });
     const form = useRef(null);
 
@@ -25,10 +25,7 @@ const CreatePost = ({ jwt, setIsCreating }) => {
                     error: ''
                 });
                 setIsCreating(false);
-                Router.push({
-                    pathname: '/home',
-                    query: { msg: data.message }
-                });
+                mutate();
             } else {
                 console.log('There was an error with creating your post. Error message:', data.message);
                 setPostData({

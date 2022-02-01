@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import useSWR from 'swr';
 import { getAuth } from '../../utils/apiHandler';
 import CreateComment from './ManageComments/CreateComment';
