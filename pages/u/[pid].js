@@ -5,7 +5,6 @@ import webRoutes from '../../utils/webRoutes';
 import { Layout, Profile } from '../../components';
 
 const User = ({ auth, currentUser }) => {
-    const [message, setMessage] = useState('');
     const router = useRouter();
     const { pid } = router.query;
 
@@ -16,7 +15,7 @@ const User = ({ auth, currentUser }) => {
     } else {
         return (
             <Layout auth={auth.token} currentUser={currentUser}>
-                <Profile jwt={auth.token} currentUsersID={currentUser.user_id} query_id={pid} message={message} setMessage={setMessage} />
+                <Profile jwt={auth.token} currentUser={currentUser} query_id={pid} PUBLIC_URL={`${process.env.NEXT_PUBLIC_API_URL}`}/>
             </Layout>
         )
     }

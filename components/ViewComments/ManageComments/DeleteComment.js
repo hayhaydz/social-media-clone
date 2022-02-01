@@ -20,7 +20,6 @@ const DeleteComment = ({ jwt, comment_id, post_id, isDeleting, setIsDeleting, mu
                 mutate();
                 Router.push({
                     pathname: `/p/${post_id}`,
-                    query: { msg: data.message }
                 }, undefined, { scroll: false });
             } else {
                 console.log('There was an error with deleting your comment. Error message:', data.message);

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import Router from 'next/router';
 import { deleteAuth } from '../../../utils/apiHandler';
 import { Error } from '../../';
 
 
-const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
+const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting, mutate, setFeedbackMsg }) => {
     const [deleteData, setDeleteData] = useState({error: '' });
 
     const handleConfirmClick = async () => {
@@ -17,10 +16,11 @@ const DeletePost = ({ jwt, post_id, isDeleting, setIsDeleting }) => {
         response.json().then(async (data) => {
             if(data.status === 'success') {
                 setIsDeleting(!isDeleting);
-                Router.push({
-                    pathname: '/home',
-                    query: { msg: data.message }
-                });
+                setFeedbackMsg({
+                    isError: false,
+                    text: 'Post was deleted successfully'
+                })
+                mutate();
             } else {
                 console.log('There was an error with deleting your post. Error message:', data.message);
                 setDeleteData({

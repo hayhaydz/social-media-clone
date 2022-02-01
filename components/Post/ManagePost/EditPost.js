@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import Router from 'next/router';
 import { patchAuth } from '../../../utils/apiHandler';
 import { ManagePost } from '../../';
 
-const EditPost = ({ jwt, post_id, text, setIsEditing }) => {
+const EditPost = ({ jwt, post_id, text, setIsEditing, mutate, setFeedbackMsg }) => {
     const [postData, setPostData] = useState({ text: text, charCount: text.length, error: '' });
     // NEED TO ADDRESS AN ABILITY TO EDIT IMAGES ON POSTS. NEED TO FEED IMAGE DATA THROUGH TO INPUT...
 
@@ -20,10 +19,11 @@ const EditPost = ({ jwt, post_id, text, setIsEditing }) => {
         response.json().then(async (data) => {
             if(data.status === 'success') {
                 setIsEditing(false);
-                Router.push({
-                    pathname: '/home',
-                    query: { msg: data.message }
-                });
+                setFeedbackMsg({
+                    isError: false,
+                    text: 'Post was edited successfully'
+                })
+                mutate();
             } else {
                 console.log('There was an error with updating your post. Error message:', data.message);
                 setPostData({

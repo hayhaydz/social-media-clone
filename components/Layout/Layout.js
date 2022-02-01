@@ -1,20 +1,7 @@
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import Head from 'next/head';
 import Header from '../Header/Header';
-import { Error, Success } from '../';
 
 const Layout = ({ children, auth, currentUser }) => {
-    const router = useRouter();
-
-    useEffect(() => {
-        if(router.query.msg) {
-            setTimeout(() => {
-                let path = router.asPath.split('?')[0];
-                router.push(path, undefined, { scroll: false });
-            }, 3000);
-        }
-    });
 
     return (
         <main className="prose m-auto p-2 md:p-0 md:mt-8 max-w-screen-xl">
@@ -28,13 +15,7 @@ const Layout = ({ children, auth, currentUser }) => {
                 : <Header jwt={auth} />
             }
             
-            
             {children}
-            {router.query.msg &&
-                <div className="m-auto mb-8 max-w-xl w-full">
-                    <Success text={router.query.msg} />
-                </div>
-            }
         </main>
     )
 }
