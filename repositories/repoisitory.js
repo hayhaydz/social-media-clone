@@ -67,7 +67,7 @@ export class open {
             JOIN user_profiles ON user_profiles.user_id = posts.user_id 
             JOIN users ON users.user_id = posts.user_id LEFT 
             JOIN post_images ON post_images.image_id = posts.image_id 
-            ORDER BY posts.post_id DESC
+            ORDER BY date_published DESC
             LIMIT ? OFFSET ?
         `, [userID, limit, offset]);
     }
@@ -91,7 +91,7 @@ export class open {
             JOIN users ON users.user_id = posts.user_id LEFT 
             JOIN post_images ON post_images.image_id = posts.image_id 
             WHERE users.username = ?
-            ORDER BY posts.post_id DESC
+            ORDER BY date_published DESC
             LIMIT ? OFFSET ?
         `, [userID, username, limit, offset]);
     }
@@ -122,8 +122,8 @@ export class open {
         return dao.get(`SELECT * FROM posts WHERE post_id = ?`, [id]);
     }
 
-    static async insertPost(id, text, imageID, at) {
-        return dao.run("INSERT INTO posts (user_id, text, image_id, date_published) VALUES (?, ?, ?, ?)", [id, text, imageID, at]);
+    static async insertPost(p_id, u_id, text, imageID, at) {
+        return dao.run("INSERT INTO posts (post_id, user_id, text, image_id, date_published) VALUES (?, ?, ?, ?, ?)", [p_id, u_id, text, imageID, at]);
     }
 
     static async updatePost(id, text) {
