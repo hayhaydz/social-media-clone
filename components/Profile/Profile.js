@@ -18,12 +18,12 @@ const Profile = ({ jwt, currentUser, query_id, PUBLIC_URL }) => {
                 <>
                     {response.status !== 'fail' &&
                         <>
-                            <div className="flex justify-between items-center mb-8">
+                            <div className="flex flex-col md:flex-row justify-between md:items-center mb-8">                       
                                 <div>
-                                <h1 className="!text-5xl font-bold !mt-8 uppercase">{`${response.data.first_name} ${response.data.last_name}`}</h1>
-                                {response.data.description &&
-                                    <p className="max-w-lg">{response.data.description}</p>
-                                }
+                                    <h1 className="!text-5xl font-bold !mt-8 uppercase">{`${response.data.first_name} ${response.data.last_name}`}</h1>
+                                    {response.data.description &&
+                                        <p className="max-w-lg">{response.data.description}</p>
+                                    }
                                 </div>
                                 
                                 {response.data.user_id == currentUser.user_id &&

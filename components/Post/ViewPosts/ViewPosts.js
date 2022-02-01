@@ -29,7 +29,7 @@ const ViewPost = ({ jwt, currentUser, BASE_URL, PUBLIC_URL}) => {
     return (
         <div>
             {router.pathname == '/home' &&
-                <div className="flex justify-between items-center mb-8">
+                <div className="flex flex-col md:flex-row justify-between md:items-center mb-8">
                     <div>
                         <span className="block mb-2 mt-8 font-medium">Welcome back,</span>
                         <h1 className="uppercase !text-5xl font-bold">{`${currentUser.first_name} ${currentUser.last_name}`}</h1>

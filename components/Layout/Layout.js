@@ -4,10 +4,10 @@ import Header from '../Header/Header';
 const Layout = ({ children, auth, currentUser }) => {
 
     return (
-        <main className="prose m-auto p-2 md:p-0 md:mt-8 max-w-screen-xl">
+        <main className="prose m-auto p-2 lg:mt-8 max-w-screen-xl">
             <Head>
-                <title>Cool NextJS App</title>
-                <meta name="description" content="A super cool NextJS app" />
+                <title>Neem</title>
+                <meta name="description" content="Just another social media app that misses the mark of a 'Digital Society'" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
             {currentUser ?

@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { login } from '../../../utils/auth';
 import { post } from '../../../utils/apiHandler';
-import Error from '../../Alert/Error/Error';
 
-const LoginForm = () => {
-    const [userData, setUserData] = useState({ username: '', password: '', error: '' });
+const LoginForm = ({ responseMsg, setResponseMsg }) => {
+    const [userData, setUserData] = useState({ username: '', password: '' });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setUserData({
-            ...userData,
-            error: ''
-        });
+        setResponseMsg({
+            isError: false,
+            text: ''
+        })
 
         const { username, password } = userData;
 
@@ -22,10 +21,10 @@ const LoginForm = () => {
                 await login({ access_token, access_token_expiry});
             } else {
                 console.log('There was an error with logging the user in. Error message:', data.message);
-                setUserData({
-                    ...userData,
-                    error: data.message
-                })
+                setResponseMsg({
+                    isError: true,
+                    text: data.message
+                });
             }
         });
     }
@@ -70,10 +69,6 @@ const LoginForm = () => {
                 >
                     Login
                 </button>
-
-                {userData.error && 
-                    <Error text={userData.error}/>
-                }
             </form>
         </div>
     )
