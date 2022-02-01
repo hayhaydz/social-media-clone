@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Router from 'next/router';
 import useSWR from 'swr';
 import { getAuth } from '../../utils/apiHandler';
 import ViewPosts from '../Post/ViewPosts/ViewPosts';
@@ -26,7 +27,7 @@ const Profile = ({ jwt, currentUsersID, query_id, message, setMessage }) => {
                                 </div>
                                 
                                 {response.data.user_id == currentUsersID &&
-                                    <button className="btn btn-primary">Edit Profile</button>
+                                    <button className="btn btn-primary" onClick={() => Router.push('/settings')}>Edit Profile</button>
                                 }
                             </div>
                             <ViewPosts jwt={jwt} currentUsersID={currentUsersID} message={message} setMessage={setMessage} BASE_URL={`${process.env.PRIVATE_API_URL}/api/post/u/${response.data.username}`} />

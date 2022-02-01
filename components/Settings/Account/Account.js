@@ -5,6 +5,7 @@ const AccountSettings = ({ jwt, username, email, verification, changedFields, se
     const originalData = { username: username, email: email };
     const [userAccountData, setUserAccountData] = useState({ username: username, email: email });
     const [isEditingAccount, setIsEditingAccount] = useState(false);
+    const [verificationState, setVerificationState] = useState(verification);
 
     const handleAccountInputChange = (e) => {
         setChangedFields([]);
@@ -24,16 +25,20 @@ const AccountSettings = ({ jwt, username, email, verification, changedFields, se
 
     const handleAccountSave = async (e) => {
         e.preventDefault();
+        setError('');
 
-        const response = await postAuth(changedFields, `${process.env.PRIVATE_API_URL}/api/user/updateUser`, jwt);
+        const response = await postAuth(changedFields, `${process.env.PRIVATE_API_URL}/api/user/update`, jwt);
         response.json().then(async (result) => {
             if(result.status === 'success') {
+                originalData.username = result.data.username;
+                originalData.email = result.data.email;
+                setVerificationState(result.data.verification);
                 setIsEditingAccount(false);
             } else {
                 setUserAccountData({
                     ...userAccountData,
                     username: result.data.username,
-                    email: result.data.email
+                    email: result.data.email,
                 });
                 setIsEditingAccount(false);
                 console.log('There was an error with updating your information. Error message:', result.message);
@@ -86,7 +91,7 @@ const AccountSettings = ({ jwt, username, email, verification, changedFields, se
                     onChange={handleAccountInputChange}
                     required
                 />
-                {!verification &&
+                {!verificationState &&
                     <p className="text-sm !my-0">Email address is not verified. <button className="btn btn-link px-0 pl-2" onClick={handleResendVerify}>Resend Link</button></p>
                 }
             </div>
