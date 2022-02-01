@@ -1,26 +1,30 @@
 import React, { useState } from 'react';
 import { post } from '../../../utils/apiHandler';
-import { Error, Success } from '../../index';
 
-const RegisterForm = () => {
-    const [userData, setUserData] = useState({ username: '', email: '', password: '', first_name: '', last_name: '', status: '', response: '' });
+const RegisterForm = ({ setIsLogin, responseMsg, setResponseMsg }) => {
+    const [userData, setUserData] = useState({ username: '', email: '', password: '', first_name: '', last_name: '' });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setUserData({
-            ...userData,
-            status: '',
-            response: ''
+        setResponseMsg({
+            isError: false,
+            text: ''
         });
 
         const { username, email, password, first_name, last_name } = userData;
 
         const response = await post({username, email, password, first_name, last_name}, `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`);
         response.json().then(async (data) => {
-            setUserData({
-                ...userData,
-                status: data.status,
-                response: data.message
+            let errrorStatus = false;
+            if(data.status == 'success') {
+                setIsLogin(true);
+            } else {
+                errrorStatus = true
+            }
+            
+            setResponseMsg({
+                isError: errrorStatus,
+                text: data.message
             });
         });
     }
@@ -105,11 +109,6 @@ const RegisterForm = () => {
                     required
                 />
                 <button type="submit" className="btn btn-primary">Register</button>
-
-                {userData.response ?
-                    userData.status == 'fail' ? <Error text={userData.response}/> : <Success text={userData.response} />
-                    : <label ></label>
-                }
             </form>
         </div>
     )

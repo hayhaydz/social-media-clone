@@ -37,7 +37,7 @@ const Header = ({ jwt, currentUsersUsername }) => {
                 <Link href="/home"><button className="btn btn-ghost"><span className="text-lg font-bold lowercase">neem</span></button></Link>
             </div>
             {jwt && 
-                <div className="md:flex-none">
+                <div className="md:flex-none w-full justify-between md:w-auto">
                     <form action="#" className="form-control mr-2" onSubmit={handleSearchSubmit}>
                         <div className="flex space-x-2">
                             <input 
