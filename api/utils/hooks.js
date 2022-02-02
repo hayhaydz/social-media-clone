@@ -12,7 +12,7 @@ const {
 // https://stackoverflow.com/questions/39092822/how-to-confirm-email-address-using-express-node
 export const handleVerification = async (userID, email) => {
     const verification_token = jwt.sign({ user_id: userID }, VERIFICATION_TOKEN_SECRET, { expiresIn: `${VERIFICATION_TOKEN_EXPIRES}m` });
-    const url = BASE_URL + 'api/auth/verify/' + verification_token;
+    const url = BASE_URL + '/api/auth/verify/' + verification_token;
 
     let transporter = nodemailer.createTransport(sgTransport({
         auth: {

@@ -1,8 +1,10 @@
 let sqlite3 = require('sqlite3').verbose();
 
-const DBSOURCE = "db.sqlite";
+const {
+    DB_SOURCE
+} = require('./config');
 
-let db = new sqlite3.Database(DBSOURCE, (err) => {
+let db = new sqlite3.Database(DB_SOURCE, (err) => {
     if(err) {
         console.error(err.message);
         throw err;
