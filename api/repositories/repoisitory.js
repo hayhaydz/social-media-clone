@@ -126,8 +126,8 @@ export class open {
         return dao.run("INSERT INTO posts (post_id, user_id, text, image_id, date_published) VALUES (?, ?, ?, ?, ?)", [p_id, u_id, text, imageID, at]);
     }
 
-    static async updatePost(id, text) {
-        return dao.run("UPDATE posts SET text = ? WHERE post_id = ?", [text, id]);
+    static async updatePost(id, text, image_id) {
+        return dao.run("UPDATE posts SET text = ?, image_id = ? WHERE post_id = ?", [text, image_id, id]);
     }
 
     static async deletePost(postID) {

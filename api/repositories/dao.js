@@ -121,7 +121,7 @@ export default class {
 
             db.run("PRAGMA foreign_keys = ON");
 
-            db.get("SELECT user_id FROM users WHERE username =?", ['foo'], (err, res) => {
+            db.get("SELECT user_id FROM users WHERE username =?", ['admin'], (err, res) => {
                 if(!res) {
                     let password = '&nuNGTNpqMW@d88g';
                     bcrypt.hash(password, saltRounds, ((err, hash) => {

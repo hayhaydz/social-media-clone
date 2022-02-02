@@ -113,8 +113,8 @@ const Post = ({ post_id, user_id, first_name, last_name, username, text, date_pu
             </div>
             <p className="break-words">{text}</p>
             {filename &&
-                <div className={'bg-base-100 rounded-2xl mb-4 ' + (!isSingle ? 'max-h-80 h-full flex items-center overflow-hidden' : '')}>
-                    <img src={`${process.env.PRIVATE_API_URL}/uploads/images/posts/${filename}`}/>
+                <div className={'bg-base-100 mb-4 rounded-2xl ' + (!isSingle ? 'max-h-80 h-full flex items-center overflow-hidden' : '')}>
+                    <img src={`${filename}`} className={'object-cover !m-0 rounded-2xl min-h-[300px] h-full w-full ' + (isSingle ? 'max-h-[900px] h-auto' : 'max-h-[300px]')} />
                 </div>
             }
 
