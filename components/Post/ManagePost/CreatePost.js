@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import Router from 'next/router';
 import { postFormDataAuth } from '../../../utils/apiHandler';
 import { ManagePost } from '../../';
 
